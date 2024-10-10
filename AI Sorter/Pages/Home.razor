@@ -19,5 +19,6 @@
     private async void SendApiRequest()
     {
         htmlOutput = MarkdownService.ConvertMarkdownToHtml(await OllamaApiService.GetOllamaResponseAsync(promptInput, "gemma2"));
+        StateHasChanged();
     }
 }
