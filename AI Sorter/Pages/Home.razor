@@ -1,7 +1,23 @@
 ﻿@page "/"
+@inject MarkdownService MarkdownService
+@inject OllamaApiService OllamaApiService
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<textarea @bind="promptInput" rows="10" cols="50"></textarea>
 
-Welcome to your new app.
+<button @onclick="SendApiRequest">Отправить запрос</button>
+
+<div>
+    @((MarkupString)htmlOutput)
+</div>
+
+@code {
+    private string promptInput = "Почему небо голубое?";
+    private string htmlOutput = string.Empty;
+
+    private async void SendApiRequest()
+    {
+        htmlOutput = MarkdownService.ConvertMarkdownToHtml(await OllamaApiService.GetOllamaResponseAsync(promptInput, "gemma2"));
+    }
+}
