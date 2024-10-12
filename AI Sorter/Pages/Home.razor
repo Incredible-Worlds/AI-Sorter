@@ -8,6 +8,21 @@
 
 <button @onclick="SendApiRequest">Отправить запрос</button>
 
+<InputFile OnChange="UploadFile" />
+
+<h2>Selected file</h2>
+<div>
+    <div>File name: @FileName</div>
+    <div>File size: @FileSize.ToString("n0") bytes</div>
+    <div>File type: @FileType</div>
+    <div>Last modified: @LastModified</div>
+</div>
+
+@if (!string.IsNullOrEmpty(ErrorMessage))
+{
+    <div>Error: @ErrorMessage</div>
+}
+
 <div>
     @((MarkupString)htmlOutput)
 </div>
@@ -21,4 +36,43 @@
         htmlOutput = MarkdownService.ConvertMarkdownToHtml(await OllamaApiService.GetOllamaResponseAsync(promptInput, "gemma2"));
         StateHasChanged();
     }
+
+    public string FileName { get; set; } = "";
+    public long FileSize { get; set; }
+    public string FileType { get; set; } = "";
+    public DateTimeOffset LastModified { get; set; }
+    public string ErrorMessage { get; set; } = "";
+
+    const int MAX_FILESIZE = 5000 * 1024; // 2 MB
+
+    public async Task UploadFile(InputFileChangeEventArgs e)
+    {
+        var browserFile = e.File; 
+
+        if (browserFile != null) //проверка пустой файлик или нет
+        {
+            FileSize = browserFile.Size; //размер
+            FileType = browserFile.ContentType; //тип содержимого
+            FileName = browserFile.Name; // имя загружённого файла
+            LastModified = browserFile.LastModified; //дата последнего изменения загруж. файла
+
+            try
+            {
+                var fileStream = browserFile.OpenReadStream(MAX_FILESIZE); //ограничение на размер ??? если надо
+
+                var randomFile = Path.GetTempFileName(); //временное случайное имя
+                var extension = Path.GetExtension(browserFile.Name); // расширение загруж. файла
+                var targetFilePath = Path.ChangeExtension(randomFile, extension); //Создается целевой путь файла с расширением из оригинального файла
+
+                var destinationStream = new FileStream(targetFilePath, FileMode.Create);
+                await fileStream.CopyToAsync(destinationStream); //Копируется содержимое загруженного файла в целевой файл асинхронно
+                destinationStream.Close(); // Закрывается поток записи в целевой файл
+            }
+            catch (Exception exception)
+            {
+                ErrorMessage = exception.Message;
+            }
+        }
+    }
+    
 }
