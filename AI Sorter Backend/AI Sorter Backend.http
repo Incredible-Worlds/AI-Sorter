@@ -3,4 +3,7 @@
 GET {{AI_Sorter_Backend_HostAddress}}/weatherforecast/
 Accept: application/json
 
+POST {{AI_Sorter_Backend_HostAddress}}/sorter/
+Accept: application/json
+
 ###
