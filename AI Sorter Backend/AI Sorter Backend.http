@@ -1,0 +1,6 @@
+@AI_Sorter_Backend_HostAddress = http://localhost:5124
+
+GET {{AI_Sorter_Backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
