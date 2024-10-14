@@ -1,5 +1,8 @@
 using AI_Sorter_Backend.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace AI_Sorter_Backend.Controllers
 {
@@ -34,18 +37,38 @@ namespace AI_Sorter_Backend.Controllers
 
     [ApiController]
     [Route("api/[controller]")]
-    public class XMLTableController : ControllerBase
+    public class ProxyController : ControllerBase
     {
-        [HttpPost(Name = "PostXMLTable")]
-        public IEnumerable<XML> Post()
+        private readonly HttpClient _httpClient;
+
+        public ProxyController(HttpClient httpClient)
         {
-            return Enumerable.Range(1, 1).Select(index => new XML
+            _httpClient = httpClient;
+        }
+
+        [HttpPost("generate")]
+        public async Task<IActionResult> ProxyGenerate([FromBody] object data)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:11434/api/generate")
             {
-                Columns = 1,
-                Rows = 1,
-                Data = "Help me!"
-            })
-            .ToArray();
+                Content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json")
+            };
+
+            try
+            {
+                var response = await _httpClient.SendAsync(request);
+                var responseBody = await response.Content.ReadAsStringAsync();
+
+                return Content(responseBody, "application/json");
+            }
+            catch (HttpRequestException httpEx)
+            {
+                return StatusCode(500, $"HTTP ошибка: {httpEx.Message}");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Ошибка: {ex.Message}");
+            }
         }
     }
 }
