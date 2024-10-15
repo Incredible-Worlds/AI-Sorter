@@ -32,7 +32,7 @@ namespace AI_Sorter_Backend.Controllers
         {
             var request = new HttpRequestMessage(HttpMethod.Post, ollamaApiUrl + "/api/generate")
             {
-                Content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json")
+                Content = new StringContent(System.Text.Json.JsonSerializer.Serialize(data), Encoding.UTF8, "application/json")
             };
 
             try
@@ -61,9 +61,7 @@ namespace AI_Sorter_Backend.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
-                    string responseBody = await response.Content.ReadAsStringAsync();
-                    var jsonResponse = JsonConvert.DeserializeObject<dynamic>(responseBody);
-                    return jsonResponse.response;
+                    return await response.Content.ReadAsStringAsync();
                 }
                 else
                 {
