@@ -1,45 +1,26 @@
 using AI_Sorter_Backend.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.IO;
 using Newtonsoft.Json;
 using System.Text;
 
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Text.Json;
+
 namespace AI_Sorter_Backend.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase
-    {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
-        private readonly ILogger<WeatherForecastController> _logger;
-
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
-        {
-            _logger = logger;
-        }
-
-        [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
-        {
-            return Enumerable.Range(1, 7).Select(index => new WeatherForecast
-            {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
-        }
-    }   
-
     [ApiController]
     [Route("api/[controller]")]
     public class ProxyController : ControllerBase
     {
         private readonly HttpClient _httpClient;
+        private const string ollamaApiUrl = "http://localhost:11434";
 
         public ProxyController(HttpClient httpClient)
         {
@@ -49,7 +30,7 @@ namespace AI_Sorter_Backend.Controllers
         [HttpPost("generate")]
         public async Task<IActionResult> ProxyGenerate([FromBody] object data)
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:11434/api/generate")
+            var request = new HttpRequestMessage(HttpMethod.Post, ollamaApiUrl + "/api/generate")
             {
                 Content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json")
             };
@@ -68,6 +49,30 @@ namespace AI_Sorter_Backend.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, $"Ошибка: {ex.Message}");
+            }
+        }
+
+        [HttpGet("serviceStatus")]
+        public async Task<string> ProxyStatus()
+        {
+            try
+            {
+                HttpResponseMessage response = await _httpClient.GetAsync(ollamaApiUrl);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    var jsonResponse = JsonConvert.DeserializeObject<dynamic>(responseBody);
+                    return jsonResponse.response;
+                }
+                else
+                {
+                    return $"Ошибка: {response.StatusCode}, {response.ReasonPhrase}";
+                }
+            }
+            catch (Exception ex)
+            {
+                return $"Исключение: {ex.Message}";
             }
         }
     }
