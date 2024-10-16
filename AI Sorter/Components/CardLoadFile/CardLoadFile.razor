@@ -1,0 +1,46 @@
+﻿<div>
+	<h2>Загрузить файл</h2>
+
+	<hr />
+</div>
+
+<ul>
+	<li>Выберите файл в формате .xlsx или .xls</li>
+	<li>Перетащите файл или нажмите на “Выбрать файл”</li>
+	<li>Выберите режим сортировки</li>
+	<li>Нажмите на кнопку “Начать” </li>
+</ul>
+
+<div id="uploadFile_Loader" >
+	<form action="/" method="post">
+		<fieldset class="upload-zone">
+			<input type="hidden" id="MAX_FILE_SIZE" name="MAX_FILE_SIZE" value="300000" />
+			<p class="" id="filedrag">Перетащите файл или выберите на компьютере</p>
+			<label for="fileselect" class="fileselect">Выбрать файл</label>
+			<input type="file" id="fileselect" name="fileselect[]" multiple="multiple"/>
+		</fieldset>
+
+		<fieldset class="radio-zone">
+			<p>Выберите режим сортировки:</p>
+
+			<div>
+				<input type="radio" id="sort1" name="sort" value="1" checked />
+				<label for="sort1">Сортировка с ...</label>
+			</div>
+
+			<div>
+				<input type="radio" id="sort2" name="sort" value="2" />
+				<label for="sort2">Сортировка с выводом дубликатов</label>
+			</div>
+		</fieldset>
+
+		<div class="button-center" id="submitbutton">
+			<button class="button" type="submit">Начать</button>
+		</div>
+	</form>
+</div>
+
+
+@code {
+
+}
