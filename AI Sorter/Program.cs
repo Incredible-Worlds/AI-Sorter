@@ -11,5 +11,6 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 
 builder.Services.AddSingleton<MarkdownService>();
 builder.Services.AddSingleton<OllamaApiService>();
+builder.Services.AddSingleton<UploadFile>();
 
 await builder.Build().RunAsync();
