@@ -7,7 +7,7 @@ namespace AI_Sorter.Services
     public class OllamaApiService
     {
         private static readonly HttpClient client = new HttpClient();
-        private const string apiUrl = "http://37.193.240.201:11444/api/Proxy/generate";
+        private const string apiUrl = "http://37.193.240.201:11445/api/Proxy/generate";
 
         public async Task<string> GetOllamaResponseAsync(string prompt, string modelName)
         {
