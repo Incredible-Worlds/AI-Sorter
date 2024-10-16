@@ -103,14 +103,16 @@ namespace AI_Sorter_Backend.Controllers
                 Directory.CreateDirectory(uploadsFolderPath);
             }
 
-            var filePath = Path.Combine(uploadsFolderPath, file.FileName);
+            var uniqueFileName = $"{DateTime.Now.Ticks}{Path.GetExtension(file.FileName)}";
+
+            var filePath = Path.Combine(uploadsFolderPath, uniqueFileName);
 
             using (var fileStream = new FileStream(filePath, FileMode.Create))
             {
                 await file.CopyToAsync(fileStream);
             }
 
-            return Ok($"Файл загружен");
+            return Ok(new { message = "Файл загружен", newFileName = uniqueFileName });
         }
     }
 
