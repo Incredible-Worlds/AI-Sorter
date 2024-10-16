@@ -1,0 +1,36 @@
+﻿.upload-zone {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items:center;
+
+    gap: 10px;
+
+    padding: 64px 0;
+    border: 3px dashed #E2E9FF;
+    border-radius: 8px;
+}
+
+.radio-zone {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    padding: 24px 0;
+}
+
+.button-center {
+    display: flex;
+    justify-content:center;
+}
+
+.fileselect {
+    display: inline-block;
+    cursor: pointer;
+    color: var(--color-main);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    font-weight: 700;
+}

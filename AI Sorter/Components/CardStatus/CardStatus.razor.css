@@ -1,0 +1,31 @@
+﻿.file-card {
+    display: flex;
+    justify-content: space-between;
+    padding: 18px 24px;
+    border-radius: 12px;
+    background-color: var(--color-white);
+    box-shadow: 0px 0px 10px 0px rgba(178, 189, 243, 0.3);
+}
+
+.file-info-content {
+    display:flex;
+    gap: 10px;
+}
+
+.status-done {
+    color: var(--color-done);
+}
+
+.status-progress {
+    color: var(--color-progress);
+}
+
+.status-error {
+    color: var(--color-error);
+}
+
+.file-date {
+    font-size: 12px;
+    color: var(--color-grey);
+    padding-top: 8px;
+}
