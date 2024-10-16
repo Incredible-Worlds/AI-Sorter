@@ -1,17 +1,6 @@
-using AI_Sorter_Backend.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.IO;
-using Newtonsoft.Json;
 using System.Text;
-
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Text.Json;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace AI_Sorter_Backend.Controllers
 {
@@ -39,7 +28,6 @@ namespace AI_Sorter_Backend.Controllers
             {
                 var response = await _httpClient.SendAsync(request);
                 var responseBody = await response.Content.ReadAsStringAsync();
-
                 return Content(responseBody, "application/json");
             }
             catch (HttpRequestException httpEx)
@@ -74,4 +62,56 @@ namespace AI_Sorter_Backend.Controllers
             }
         }
     }
+
+    [ApiController]
+    [Route("api/[controller]")]
+    public class SorterController : ControllerBase
+    {
+        [HttpPost("UploadTable")]
+        public async Task<IActionResult> UploadFile([FromForm] IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("Файл не выбран");
+            }
+
+            // Cheack for type of file
+            var allowedExtensions = new[] { ".xls", ".xlsx" };
+            var allowedMimeTypes = new[]
+            {
+                "application/vnd.ms-excel",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            };
+
+            var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+
+            if (!allowedExtensions.Contains(extension))
+            {
+                return BadRequest(new { message = "Неверный формат файла. Разрешены только .xls и .xlsx" });
+            }
+
+            if (!allowedMimeTypes.Contains(file.ContentType))
+            {
+                return BadRequest(new { message = "Неверный MIME-тип файла" });
+            }
+
+            // Write file to filesystem
+            var uploadsFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "UploadedFiles");
+
+            if (!Directory.Exists(uploadsFolderPath))
+            {
+                Directory.CreateDirectory(uploadsFolderPath);
+            }
+
+            var filePath = Path.Combine(uploadsFolderPath, file.FileName);
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(fileStream);
+            }
+
+            return Ok($"Файл загружен");
+        }
+    }
+
 }
