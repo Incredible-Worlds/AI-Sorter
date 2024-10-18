@@ -40,13 +40,13 @@ public class AnyPromptSortService
                 }
             }
 
-            Task.Run(() => DeletePromptData(prompt));
+            Task.Run(() => DeletePromptData(filePath, prompt));
 
             package.Save(); 
         }
     }
 
-    private static async Task DeletePromptData(string _prompt)
+    private static async Task DeletePromptData(string filePath, string _prompt)
     {
         HttpClient aspClient = new HttpClient();
         const string apiUrl = "http://localhost:11434/api/generate";
@@ -81,8 +81,90 @@ public class AnyPromptSortService
             var jsonResponse = JsonConvert.DeserializeObject<dynamic>(responseBody);
             if (jsonResponse.response == "OK")
             {
-                Debug.WriteLine("200 OK");
+                AISortDatasheet(filePath);
             }
         }
+    }
+
+    private static async void AISortDatasheet(string filePath)
+    {
+        using (var package = new ExcelPackage(new FileInfo(filePath)))
+        {
+            var worksheet = package.Workbook.Worksheets[0];
+            var startRow = 1;
+            var endRow = worksheet.Dimension.End.Row;
+            var columnToSort = 1;
+            int batchSize = 5; // Размер группы
+
+            // Читаем данные из диапазона
+            var data = worksheet.Cells[startRow, 1, endRow, worksheet.Dimension.End.Column]
+                .Select(cell => new
+                {
+                    Row = cell.Start.Row,
+                    Col = cell.Start.Column,
+                    Value = worksheet.Cells[cell.Start.Row, cell.Start.Column].Value
+                })
+                .GroupBy(c => c.Row)
+                .Select(g => g.Select(c => new { c.Value, g.Key }).ToList())
+                .ToList();
+
+            // Разбиваем данные на батчи по 10 записей
+            for (int i = 0; i < data.Count; i += batchSize)
+            {
+                var batch = data.Skip(i).Take(batchSize).ToList();
+                var batchValues = string.Join("\r\n", batch.Select(row => row[0].Value.ToString()));
+
+                // Отправляем батч в API
+                var result = await SendDataToAPI(batchValues);
+
+                // Обрабатываем ответ и меняем цвет ячеек
+                for (int j = 0; j < batch.Count; j++)
+                {
+                    if (result[j] == "OK") // Если ответ "OK"
+                    {
+                        // Зеленый цвет для ячейки
+                        worksheet.Cells[batch[j][0].Key, 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                        worksheet.Cells[batch[j][0].Key, 1].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGreen);
+                    }
+                    else
+                    {
+                        // Красный цвет для ячейки
+                        worksheet.Cells[batch[j][0].Key, 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                        worksheet.Cells[batch[j][0].Key, 1].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightCoral);
+                    }
+                }
+            }
+
+            package.Save();
+        }
+    }
+
+    private static async Task<List<string>> SendDataToAPI(string batchValues)
+    {
+        HttpClient aspClient = new HttpClient();
+        const string apiUrl = "http://localhost:11434/api/generate";
+
+        var requestData = new
+        {
+            model = "gemma2",
+            stream = false,
+            prompt = batchValues
+        };
+
+        var jsonContent = JsonConvert.SerializeObject(requestData);
+        var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+        HttpResponseMessage response = await aspClient.PostAsync(apiUrl, content);
+
+        if (response.IsSuccessStatusCode)
+        {
+            string responseBody = await response.Content.ReadAsStringAsync();
+            var jsonResponse = JsonConvert.DeserializeObject<dynamic>(responseBody);
+
+            // Предполагается, что API вернёт список строк с результатами для каждой записи
+            return ((IEnumerable<dynamic>)jsonResponse.results).Select(r => (string)r).ToList();
+        }
+
+        return new List<string>(); // Пустой список, если запрос неудачен
     }
 }
