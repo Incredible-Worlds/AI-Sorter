@@ -5,8 +5,11 @@ namespace AI_Sorter_Backend.Models
     {
         public class ApplicationDbContext : DbContext
         {
+            public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+            {
+            }
         
-            public DbSet<FIleEntity> postgresfile { get; set; }
+            public DbSet<FIleEntity> BlazorApp { get; set; }
 
             public void OnModelCreating(ModelBuilder modelBuilder)
             {

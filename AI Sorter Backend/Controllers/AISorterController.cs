@@ -132,11 +132,15 @@ namespace AI_Sorter_Backend.Controllers
         [HttpPost]
         public async Task<ActionResult<FIleEntity>> CreatePostgresFile([FromBody] FIleEntity postgresFile)
         {
-            _context.postgresfile.Add(postgresFile);
+            _context.BlazorApp.Add(postgresFile);
             await _context.SaveChangesAsync();
-            return CreatedAtAction("GetPostgresFile", new { id = postgresFile.id }, postgresFile);
+            return Ok(new { message = "Запись добавлена!", postgresFile });
+        }
+        [HttpGet]
+        public async Task<IEnumerable<FIleEntity>> GetFiles()
+        {
+            return _context.BlazorApp.ToList();
         }
 
-       
     }
 }
