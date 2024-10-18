@@ -113,7 +113,7 @@ namespace AI_Sorter_Backend.Controllers
                 await file.CopyToAsync(fileStream);
             }
 
-            await AnyPromptSortService.SortDatasheet(filePath);
+            await AnyPromptSortService.SortDatasheet(filePath, "комплектующие, которые не относятся к ремонту машин");
 
             return Ok(new { message = "Файл загружен", newFileName = uniqueFileName });
         }
