@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 namespace AI_Sorter_Backend.Models
 {
-    public class DbContext
+    public class DbContex
     {
         public class ApplicationDbContext : DbContext
         {

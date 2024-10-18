@@ -1,6 +1,6 @@
 using AI_Sorter_Backend.Models;
 using Microsoft.EntityFrameworkCore;
-using static AI_Sorter_Backend.Models.DbContext;
+using static AI_Sorter_Backend.Models.DbContex;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,10 +27,7 @@ builder.Services.AddSwaggerGen();
 
 
 // Adding a database connection
-builder.Services.AddDbContext<YourContext>(options => options.UseNpgsql("Host=localhost;Database=YourDatabase;Username=yourusername;Password=yourpassword"));
-
-// Adding a connection to the database Adding an entity model
-builder.Services.AddScoped<YourContext>();
+builder.Services.AddDbContext<DbContext>(options => options.UseNpgsql("Host=localhost;Database=YourDatabase;Username=yourusername;Password=yourpassword"));
 
 var app = builder.Build();
 
