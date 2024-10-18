@@ -2,16 +2,29 @@
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.JSInterop;
+
 namespace AI_Sorter.Services
 {
     public class DownloadFile
     {
-        private async Task DownloadFileFromURL()
+        public async Task DownloadFil(string filePath, string fileName, HttpContext httpContext)
         {
-            var fileName = "quote.txt";
-            var fileURL = "/files/quote.txt";
-            await JS.InvokeVoidAsync("triggerFileDownload", fileName, fileURL);
+            try
+            {
+                byte[] fileBytes = await File.ReadAllBytesAsync(filePath);
+
+                // Setting the headers for downloading the file
+                httpContext.Response.Headers.Add("Content-Disposition", $"attachment; filename=\"{fileName}\"");
+                httpContext.Response.ContentType = "application/octet-stream"; // Setting the content type
+
+                //We send the file in the response
+                await httpContext.Response.Body.WriteAsync(fileBytes);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при скачивании файла: {ex.Message}");
+            }
         }
     }
 }
