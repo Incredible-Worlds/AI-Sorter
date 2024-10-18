@@ -1,16 +1,16 @@
 var builder = WebApplication.CreateBuilder(args);
 
 // Разрешаем CORS для localhost
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowLocalhost",
-        builder =>
-        {
-            builder.WithOrigins("https://localhost:7183", "http://localhost:5274")
-                   .AllowAnyHeader()
-                   .AllowAnyMethod();
-        });
-});
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("AllowLocalhost",
+//        builder =>
+//        {
+//            builder.WithOrigins("https://localhost:7183", "http://localhost:5274")
+//                   .AllowAnyHeader()
+//                   .AllowAnyMethod();
+//        });
+//});
 
 // Add services to the container.
 
