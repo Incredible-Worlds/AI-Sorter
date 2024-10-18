@@ -1,3 +1,4 @@
+using AI_Sorter_Backend.Models;
 using Microsoft.EntityFrameworkCore;
 using static AI_Sorter_Backend.Models.DbContext;
 
@@ -44,3 +45,15 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+var builder2 = WebApplication.CreateBuilder(args);
+
+// Adding a database connection
+builder2.Services.AddDbContext<YourContext>(options => options.UseNpgsql("Host=localhost;Database=YourDatabase;Username=yourusername;Password=yourpassword"));
+
+// Adding a connection to the database Adding an entity model
+builder2.Services.AddScoped<YourContext>();
+
+var app1 = builder2.Build();
+
+app1.Run();

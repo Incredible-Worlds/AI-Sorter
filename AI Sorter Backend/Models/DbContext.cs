@@ -12,27 +12,27 @@ namespace AI_Sorter_Backend.Models
             {
              
                 modelBuilder.Entity<FIleEntity>()
-                    .HasKey(f => f.id); // Установка первичного ключа
+                    .HasKey(f => f.id); 
 
                 modelBuilder.Entity<FIleEntity>()
                     .Property(f => f.file_name)
-                    .IsRequired(); // Обязательное поле для имени файла
+                    .IsRequired(); 
 
                 modelBuilder.Entity<FIleEntity>()
                     .Property(f => f.path_file_itg)
-                    .IsRequired(); // Обязательное поле для пути итерационного файла
+                    .IsRequired(); 
 
                 modelBuilder.Entity<FIleEntity>()
                     .Property(f => f.promt_sort)
-                    .IsRequired(false); // Необязательное поле для сортировки
+                    .IsRequired(false); 
 
                 modelBuilder.Entity<FIleEntity>()
                     .Property(f => f.path_file)
-                    .IsRequired(false); // Необязательное поле для пути файла
+                    .IsRequired(false); 
 
                 modelBuilder.Entity<FIleEntity>()
                     .Property(f => f.Status_sort)
-                    .IsRequired(false); // Необязательное поле для статуса сортировки
+                    .IsRequired(false); 
             }
         }
     }
