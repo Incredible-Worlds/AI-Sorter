@@ -6,7 +6,7 @@ namespace AI_Sorter_Backend.Models
         public class ApplicationDbContext : DbContext
         {
         
-            public DbSet<FIleEntity> postgres { get; set; }
+            public DbSet<FIleEntity> postgresfile { get; set; }
 
             public void OnModelCreating(ModelBuilder modelBuilder)
             {

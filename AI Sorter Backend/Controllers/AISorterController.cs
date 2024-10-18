@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using Microsoft.AspNetCore.Http.HttpResults;
+using AI_Sorter_Backend.Models;
+using static AI_Sorter_Backend.Models.DbContex;
 
 namespace AI_Sorter_Backend.Controllers
 {
@@ -116,4 +118,25 @@ namespace AI_Sorter_Backend.Controllers
         }
     }
 
+    [Route("api/[controller]")]
+    [ApiController]
+    public class FilesController : ControllerBase
+    {
+        private readonly ApplicationDbContext _context;
+
+        public FilesController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<FIleEntity>> CreatePostgresFile([FromBody] FIleEntity postgresFile)
+        {
+            _context.postgresfile.Add(postgresFile);
+            await _context.SaveChangesAsync();
+            return CreatedAtAction("GetPostgresFile", new { id = postgresFile.id }, postgresFile);
+        }
+
+       
+    }
 }
