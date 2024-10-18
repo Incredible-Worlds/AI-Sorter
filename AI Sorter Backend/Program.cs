@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using static AI_Sorter_Backend.Models.DbContext;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Разрешаем CORS для localhost
@@ -29,6 +32,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 
 //app.UseHttpsRedirection();
 app.UseRouting();
