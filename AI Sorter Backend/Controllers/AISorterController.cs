@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using Microsoft.AspNetCore.Http.HttpResults;
+using AI_Sorter_Backend.Services;
 
 namespace AI_Sorter_Backend.Controllers
 {
@@ -72,7 +73,7 @@ namespace AI_Sorter_Backend.Controllers
         {
             if (file == null || file.Length == 0)
             {
-                return BadRequest("Файл не выбран");
+                return BadRequest(new { message = "Файл не выбран" });
             }
 
             // Cheack for type of file
@@ -111,6 +112,8 @@ namespace AI_Sorter_Backend.Controllers
             {
                 await file.CopyToAsync(fileStream);
             }
+
+            await AnyPromptSortService.SortDatasheet(filePath);
 
             return Ok(new { message = "Файл загружен", newFileName = uniqueFileName });
         }
