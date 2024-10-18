@@ -2,12 +2,17 @@
 @inject MarkdownService MarkdownService
 @inject OllamaApiService OllamaApiService
 @inject UploadFile UploadFile
+@inject DownloadFile DownloadFile
+@inject NavigationManager Navigation
+
 
 <PageTitle>Home</PageTitle>
 
 <textarea @bind="promptInput" rows="10" cols="50"></textarea>
 
 <button @onclick="SendApiRequest">Отправить запрос</button>
+
+<button @onclick="Download">Скачать файл</button>
 
 <InputFile OnChange="UploadFile.UploadFiles" />
 
@@ -38,4 +43,13 @@
         StateHasChanged();
     }
 
+    private Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor { get; set; }
+
+    private async Task Download()
+    {
+        string filePath = @"C:\Users\Vladislava\Desktop\AI-Sorter\";
+        string fileName = "test.txt";
+        var httpContext = _httpContextAccessor.HttpContext;
+        await DownloadFile.DownloadFil(filePath, fileName, httpContext);
+    }
 }
