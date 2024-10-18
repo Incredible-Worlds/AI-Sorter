@@ -25,6 +25,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+// Adding a database connection
+builder.Services.AddDbContext<YourContext>(options => options.UseNpgsql("Host=localhost;Database=YourDatabase;Username=yourusername;Password=yourpassword"));
+
+// Adding a connection to the database Adding an entity model
+builder.Services.AddScoped<YourContext>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -33,6 +40,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 
 
 //app.UseHttpsRedirection();
@@ -46,14 +54,4 @@ app.MapControllers();
 
 app.Run();
 
-var builder2 = WebApplication.CreateBuilder(args);
 
-// Adding a database connection
-builder2.Services.AddDbContext<YourContext>(options => options.UseNpgsql("Host=localhost;Database=YourDatabase;Username=yourusername;Password=yourpassword"));
-
-// Adding a connection to the database Adding an entity model
-builder2.Services.AddScoped<YourContext>();
-
-var app1 = builder2.Build();
-
-app1.Run();
