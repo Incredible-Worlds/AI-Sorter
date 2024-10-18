@@ -7,6 +7,9 @@ services:
       POSTGRES_PASSWORD: BlazorApp
     volumes:
       - ./bd/:/docker-entrypoint-initdb.d
+    ports:
+      - 5432:5432
+
 
   adminer:
     image: adminer
