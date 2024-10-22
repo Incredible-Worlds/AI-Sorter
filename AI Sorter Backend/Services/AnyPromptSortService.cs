@@ -40,53 +40,55 @@ public class AnyPromptSortService
                 }
             }
 
-            Task.Run(() => DeletePromptData(filePath, prompt));
+            Task.Run(() => AISortDatasheet(filePath, prompt));
 
             package.Save(); 
         }
     }
 
-    private static async Task DeletePromptData(string filePath, string _prompt)
-    {
-        HttpClient aspClient = new HttpClient();
-        const string apiUrl = "http://localhost:11434/api/generate";
+    //private static async Task DeletePromptData(string filePath, string _prompt)
+    //{
+    //    HttpClient aspClient = new HttpClient();
+    //    const string apiUrl = "http://localhost:11434/api/generate";
 
-        string sortPrompt = "Запомни следующую информацию: я буду предоставлять тебе список данных," +
-            " а ты должен без лишних символов (без markdown) выводить лишние элементы," +
-            " не попадающие под тему сортировки с новой строки в том виде, как я тебе их передал." +
-            $" Тема сортировки: \"{_prompt}\"." +
-            " Если предмет попадает под тему сортировки, то ты должен ответить \"OK\" без лишних символов (без markdown)." +
-            " Пример запроса: \"Амортизатор пружинно-гидравлический задний LX450-F15-1, F15-1, LX450-2210000" +
-            "\r\nАмортизатор пружинно-гидравлический задний HN110GY-5C-050000" +
-            "\r\nАксесуар-игрушка утка 2151-5125125-125125" +
-            "\r\nАмортизатор пружинно-гидравлический задний 2915000-210-0000 \"" +
-            " Пример ответа: \"OK \r\nOK \r\nАксесуар-игрушка утка 2151-5125125-125125 \r\nOK\"" +
-            " Если всё понятно, то ответь \"OK\"";
+    //    //string sortPrompt = "Запомни следующую информацию: я буду предоставлять тебе список данных," +
+    //    //    " а ты должен без лишних символов (без markdown) выводить лишние элементы," +
+    //    //    " не попадающие под тему сортировки с новой строки в том виде, как я тебе их передал." +
+    //    //    $" Тема сортировки: \"{_prompt}\"." +
+    //    //    " Если предмет попадает под тему сортировки, то ты должен ответить \"OK\" без лишних символов (без markdown)." +
+    //    //    " Пример запроса: \"Амортизатор пружинно-гидравлический задний LX450-F15-1, F15-1, LX450-2210000" +
+    //    //    "\r\nАмортизатор пружинно-гидравлический задний HN110GY-5C-050000" +
+    //    //    "\r\nАксесуар-игрушка утка 2151-5125125-125125" +
+    //    //    "\r\nАмортизатор пружинно-гидравлический задний 2915000-210-0000 \"" +
+    //    //    " Пример ответа: \"OK \r\nOK \r\nАксесуар-игрушка утка 2151-5125125-125125 \r\nOK\"" +
+    //    //    " Если всё понятно, то ответь \"OK\"";
 
-        var requestData = new
-        {
-            model = "gemma2",
-            stream = false,
-            prompt = sortPrompt
-        };
+    //    string sortPrompt = "Запомни следующую информацию: я буду предоставлять тебе список данных, а ты должен без лишних символов (без markdown) выводить лишние элементы, не попадающие под тему сортировки с новой строки в том виде, как я тебе их передал. Тема сортировки: {_prompt}. Если предмет попадает под тему сортировки, то ты должен ответить OK без лишних символов (без markdown). \r\nПример запроса: \r\nАмортизатор пружинно-гидравлический задний LX450-F15-1, F15-1, LX450-2210000 \r\nАмортизатор пружинно-гидравлический задний HN110GY-5C-050000\r\nАксесуар-игрушка утка 2151-5125125-125125\r\nАмортизатор пружинно-гидравлический задний 2915000-210-0000\r\nПример ответа: \r\nOK\r\nOK\r\nАксесуар-игрушка утка 2151-5125125-125125\r\nOK\r\nЕсли всё понятно, то ответь OK.";
 
-        var jsonContent = JsonConvert.SerializeObject(requestData);
-        var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+    //    var requestData = new
+    //    {
+    //        model = "gemma2",
+    //        stream = false,
+    //        prompt = sortPrompt
+    //    };
 
-        HttpResponseMessage response = await aspClient.PostAsync(apiUrl, content);
+    //    var jsonContent = JsonConvert.SerializeObject(requestData);
+    //    var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-        if (response.IsSuccessStatusCode)
-        {
-            string responseBody = await response.Content.ReadAsStringAsync();
-            var jsonResponse = JsonConvert.DeserializeObject<dynamic>(responseBody);
-            if (jsonResponse.response == "OK")
-            {
-                AISortDatasheet(filePath);
-            }
-        }
-    }
+    //    HttpResponseMessage response = await aspClient.PostAsync(apiUrl, content);
 
-    private static async void AISortDatasheet(string filePath)
+    //    if (response.IsSuccessStatusCode)
+    //    {
+    //        string responseBody = await response.Content.ReadAsStringAsync();
+    //        var jsonResponse = JsonConvert.DeserializeObject<dynamic>(responseBody);
+    //        if (jsonResponse.response == "OK")
+    //        {
+    //            AISortDatasheet(filePath, _prompt);
+    //        }
+    //    }
+    //}
+
+    private static async void AISortDatasheet(string filePath, string prompt)
     {
         using (var package = new ExcelPackage(new FileInfo(filePath)))
         {
@@ -94,7 +96,7 @@ public class AnyPromptSortService
             var startRow = 1;
             var endRow = worksheet.Dimension.End.Row;
             var columnToSort = 1;
-            int batchSize = 5; // Размер группы
+            int batchSize = 10; // Размер группы
 
             // Читаем данные из диапазона
             var data = worksheet.Cells[startRow, 1, endRow, worksheet.Dimension.End.Column]
@@ -115,10 +117,28 @@ public class AnyPromptSortService
                 var batchValues = string.Join("\r\n", batch.Select(row => row[0].Value.ToString()));
 
                 // Отправляем батч в API
-                var result = await SendDataToAPI(batchValues);
+                var result = await SendDataToAPI(batchValues, prompt);
 
                 // Обрабатываем ответ и меняем цвет ячеек
-                for (int j = 0; j < batch.Count; j++)
+
+                for (int j = 0; j < result.Count; j++)
+                {
+                    for (int k = 0; k < batch.Count; k++)
+                    {
+                        if (worksheet.Cells[batch[k][0].Key, 1].Value == result[j])
+                        {
+                            worksheet.Cells[batch[k][0].Key, 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                            worksheet.Cells[batch[k][0].Key, 1].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightCoral);
+                        }
+                        else
+                        {
+                            worksheet.Cells[batch[k][0].Key, 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                            worksheet.Cells[batch[k][0].Key, 1].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGreen);
+                        }
+                    }
+                }
+
+/*                for (int j = 0; j < batch.Count; j++)
                 {
                     if (result[j] == "OK") // Если ответ "OK"
                     {
@@ -132,14 +152,14 @@ public class AnyPromptSortService
                         worksheet.Cells[batch[j][0].Key, 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
                         worksheet.Cells[batch[j][0].Key, 1].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightCoral);
                     }
-                }
-            }
+                }*/
+            }   
 
             package.Save();
         }
     }
 
-    private static async Task<List<string>> SendDataToAPI(string batchValues)
+    private static async Task<List<string>> SendDataToAPI(string batchValues, string sortingPrompt)
     {
         HttpClient aspClient = new HttpClient();
         const string apiUrl = "http://localhost:11434/api/generate";
@@ -148,7 +168,7 @@ public class AnyPromptSortService
         {
             model = "gemma2",
             stream = false,
-            prompt = batchValues
+            prompt = $"Выведи ниже всё, что не относится к теме \"{sortingPrompt}\":" + batchValues + " \nЕсли всё относится к этой теме, то напиши OK. Отвечай строго выводом введённых данных без лишних слов"
         };
 
         var jsonContent = JsonConvert.SerializeObject(requestData);
@@ -158,11 +178,19 @@ public class AnyPromptSortService
 
         if (response.IsSuccessStatusCode)
         {
+            // Чтение ответа как строки
             string responseBody = await response.Content.ReadAsStringAsync();
+
+            // Десериализация JSON
             var jsonResponse = JsonConvert.DeserializeObject<dynamic>(responseBody);
 
-            // Предполагается, что API вернёт список строк с результатами для каждой записи
-            return ((IEnumerable<dynamic>)jsonResponse.results).Select(r => (string)r).ToList();
+            // Предположим, что текстовый ответ находится в свойстве 'responseText'
+            string responseText = jsonResponse.responseText.ToString();
+
+            // Разделяем текст на строки по символам новой строки
+            var result = responseText.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+
+            return result.ToList();
         }
 
         return new List<string>(); // Пустой список, если запрос неудачен
