@@ -125,3 +125,17 @@ input[type="file"] {
     cursor:default;
     background-color: var(--color-sub-main);
 }
+
+textarea {
+    font-family: var(--font-main);
+    border: 3px solid #E2E9FF;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 100%;
+    resize: vertical;
+}
+
+textarea:target {
+    border: 3px solid #E2E9FF;
+    border-radius: 8px;
+}
