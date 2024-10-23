@@ -104,9 +104,9 @@ li {
 
 }
 
-input[type="file"] {
+/*input[type="file"] {
     display: none;
-}
+}*/
 
 .button {
     padding: 12px 24px;
@@ -131,7 +131,7 @@ textarea {
     border: 3px solid #E2E9FF;
     border-radius: 8px;
     width: 100%;
-    max-width: 100%;
+    min-height: 30px;
     resize: vertical;
 }
 
