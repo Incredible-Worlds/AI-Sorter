@@ -40,9 +40,9 @@ public class AnyPromptSortService
                 }
             }
 
-            Task.Run(() => AISortDatasheet(filePath, prompt));
+            package.Save();
 
-            package.Save(); 
+            Task.Run(() => AISortDatasheet(filePath, prompt));
         }
     }
 
@@ -125,34 +125,31 @@ public class AnyPromptSortService
                 {
                     for (int k = 0; k < batch.Count; k++)
                     {
-                        if (worksheet.Cells[batch[k][0].Key, 1].Value == result[j])
+                        // Получаем значение ячейки
+                        var cell = worksheet.Cells[batch[k][0].Key, 1];
+                        var celldata = cell.Value.ToString();
+
+                        // Проверяем, если ячейка уже окрашена в красный (LightCoral), пропускаем её
+                        var currentColor = cell.Style.Fill.BackgroundColor.Rgb;
+                        if (currentColor != null && currentColor.Equals("FFF08080")) // RGB код для LightCoral
                         {
-                            worksheet.Cells[batch[k][0].Key, 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                            worksheet.Cells[batch[k][0].Key, 1].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightCoral);
+                            continue; // Пропускаем ячейки, которые уже были окрашены в красный
+                        }
+
+                        // Если данные совпадают с результатом, окрашиваем в красный
+                        if (celldata == result[j])
+                        {
+                            cell.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                            cell.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightCoral);
                         }
                         else
                         {
-                            worksheet.Cells[batch[k][0].Key, 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                            worksheet.Cells[batch[k][0].Key, 1].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGreen);
+                            // В противном случае окрашиваем в зелёный
+                            cell.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                            cell.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGreen);
                         }
                     }
                 }
-
-/*                for (int j = 0; j < batch.Count; j++)
-                {
-                    if (result[j] == "OK") // Если ответ "OK"
-                    {
-                        // Зеленый цвет для ячейки
-                        worksheet.Cells[batch[j][0].Key, 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                        worksheet.Cells[batch[j][0].Key, 1].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGreen);
-                    }
-                    else
-                    {
-                        // Красный цвет для ячейки
-                        worksheet.Cells[batch[j][0].Key, 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                        worksheet.Cells[batch[j][0].Key, 1].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightCoral);
-                    }
-                }*/
             }   
 
             package.Save();
@@ -168,7 +165,7 @@ public class AnyPromptSortService
         {
             model = "gemma2",
             stream = false,
-            prompt = $"Выведи ниже всё, что не относится к теме \"{sortingPrompt}\":" + batchValues + " \nЕсли всё относится к этой теме, то напиши OK. Отвечай строго выводом введённых данных без лишних слов"
+            prompt = $"Выведи ниже всё, что не относится к теме \"{sortingPrompt}\":" + batchValues + " \nЕсли что-то относится к этой теме, то не указывай этот элемент ни в коем случае в ответе. Отвечай строго выводом введённых данных без лишних слов. Разделитель записей \";\""
         };
 
         var jsonContent = JsonConvert.SerializeObject(requestData);
@@ -184,11 +181,11 @@ public class AnyPromptSortService
             // Десериализация JSON
             var jsonResponse = JsonConvert.DeserializeObject<dynamic>(responseBody);
 
-            // Предположим, что текстовый ответ находится в свойстве 'responseText'
-            string responseText = jsonResponse.responseText.ToString();
+            // Извлечение значения из поля "response"
+            string responseText = jsonResponse.response.ToString();
 
-            // Разделяем текст на строки по символам новой строки
-            var result = responseText.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+            // Разделяем текст на строки по символам новой строки или точке с запятой
+            var result = responseText.Split(new[] { "\r\n", "\r", "\n", ";" }, StringSplitOptions.None);
 
             return result.ToList();
         }
