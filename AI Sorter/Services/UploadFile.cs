@@ -12,9 +12,11 @@ namespace AI_Sorter.Services
 
 		const int MAX_FILESIZE = 5000 * 1024; // 2 MB
 
+		private IBrowserFile uploadedFile;
+
 		public async Task UploadFiles(InputFileChangeEventArgs e)
 		{
-			var browserFile = e.File;
+			var browserFile = uploadedFile = e.File;
 
 			if (browserFile != null) //checking an empty file or not
 			{
@@ -39,6 +41,10 @@ namespace AI_Sorter.Services
 					ErrorMessage = exception.Message;
 				}
 			}
+		}
+		public IBrowserFile GetFiles()
+		{
+			return uploadedFile;
 		}
 	}
 }

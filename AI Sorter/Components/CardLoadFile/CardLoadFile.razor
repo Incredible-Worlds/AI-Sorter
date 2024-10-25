@@ -1,4 +1,5 @@
 ﻿@inject UploadFile UploadFile
+@inject ApiServices ApiServices
 
 <div>
 	<h2>Загрузить файл</h2>
@@ -51,12 +52,12 @@
 
 
 			<div>
-				<textarea id="text" name="text" rows="5"/>
+				<textarea id="text" name="text" rows="5" @bind=PromptValue />
 			</div>
 		</fieldset>
 
 		<div class="button-center" id="submitbutton">
-			<button class="button" type="submit">Начать</button>
+			<button class="button" type="submit" @onclick="SendFileWithAPI">Начать</button>
 		</div>
 	</form>
 
@@ -77,7 +78,14 @@
 
 @code {
 	private string HoverClass = string.Empty;
+	private string PromptValue = "";
+	// private UploadFile UploaderService;
 
 	void OnDragEnter(DragEventArgs e) => HoverClass = "hover";
 	void OnDragLeave(DragEventArgs e) => HoverClass = string.Empty;
+
+	private async void SendFileWithAPI()
+	{
+		ApiServices.HandleFileSelected(UploadFile.GetFiles(), PromptValue);
+	}
 }
