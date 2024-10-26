@@ -6,7 +6,7 @@ namespace AI_Sorter.Services
 	public class ApiServices
 	{
 		private static readonly HttpClient client = new HttpClient();
-		private const string apiUrl = "http://37.193.240.201:11445/api/generate";
+		private const string apiUrl = "http://37.193.240.201:11445/api/Sorter/UploadTable";
 
 		public async Task HandleFileSelected(IBrowserFile File, string prompt)
 		{
@@ -21,7 +21,7 @@ namespace AI_Sorter.Services
 					fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(selectedFile.ContentType);
 
 					content.Add(fileContent, "file", selectedFile.Name);
-					content.Add(new StringContent(prompt), "description");
+					//content.Add(new StringContent(prompt), "description");
 
 					var response = await client.PostAsync(apiUrl, content);
 

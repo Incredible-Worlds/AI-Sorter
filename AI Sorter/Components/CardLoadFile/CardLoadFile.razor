@@ -15,7 +15,7 @@
 </ul>
 
 <div id="uploadFile_Loader" >
-	<form action="/" method="post">
+	<form action="/" method="post" @onsubmit="SendFileWithAPI">
 		<fieldset class="upload-zone @HoverClass" @ondragenter="OnDragEnter" @ondragleave="OnDragLeave" @ondragover="OnDragEnter">
 			
 			@* <p class="" id="filedrag">Перетащите файл или выберите на компьютере</p> *@
@@ -57,7 +57,7 @@
 		</fieldset>
 
 		<div class="button-center" id="submitbutton">
-			<button class="button" type="submit" @onclick="SendFileWithAPI">Начать</button>
+			<button class="button" type="submit" >Начать</button>
 		</div>
 	</form>
 

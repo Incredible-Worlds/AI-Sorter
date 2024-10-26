@@ -42,6 +42,7 @@ namespace AI_Sorter.Services
 				}
 			}
 		}
+
 		public IBrowserFile GetFiles()
 		{
 			return uploadedFile;
