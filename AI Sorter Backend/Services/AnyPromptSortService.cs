@@ -2,6 +2,9 @@
 using OfficeOpenXml;
 using System.Text;
 using System.Diagnostics;
+using static AI_Sorter_Backend.Models.DbContex;
+using AI_Sorter_Backend.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace AI_Sorter_Backend.Services;
 
@@ -112,9 +115,24 @@ public class AnyPromptSortService
 
             package.Save();
         }
+        await UpdateDatabaseRecord(filePath);
     }
 
-    private static async Task<List<string>> SendDataToAPI(string batchValues, string sortingPrompt)
+	private static async Task UpdateDatabaseRecord(string filePath)
+	{
+		using (var context = new ApplicationDbContext(new DbContextOptions<ApplicationDbContext>()))
+		{
+			var record = await context.BlazorApp.FirstOrDefaultAsync(f => f.path_file == filePath);
+			if (record != null)
+			{
+				record.Status_sort = "done";
+
+				await context.SaveChangesAsync();
+			}
+		}
+	}
+
+	private static async Task<List<string>> SendDataToAPI(string batchValues, string sortingPrompt)
     {
         HttpClient aspClient = new HttpClient();
         const string apiUrl = "http://localhost:11434/api/generate";

@@ -1,12 +1,14 @@
 ﻿namespace AI_Sorter_Backend.Models
 {
-    public class FIleEntity
-    {
-        public int id { get; set; } 
-        public string file_name { get; set; } // File name
-        public string promt_sort { get; set; } // Prompt sort
-        public string path_file { get; set; } // Path to the file
-        public string path_file_itg { get; set; } // ITG path
-        public string Status_sort { get; set; } // Status sort
-    }
+    public class FIleEntity(int id, string file_name, string unic_file_name, string path_file, string path_file_competed, string status_sort)
+	{
+		public int id { get; set; } = id;
+		public string file_name { get; set; } = file_name;
+		public string unic_file_name { get; set; } = unic_file_name;
+		public string path_file { get; set; } = path_file;
+		public string path_file_competed { get; set; } = path_file_competed;
+		public string Status_sort { get; set; } = status_sort;
+
+		public DateTime datetime { get; set; } = DateTime.UtcNow;
+	}
 }
