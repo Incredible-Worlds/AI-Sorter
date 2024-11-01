@@ -1,12 +1,16 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 using static System.Net.WebRequestMethods;
+using AI_Sorter.Models;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using Newtonsoft.Json;
+using System.Net.Http.Json;
 
 namespace AI_Sorter.Services
 {
 	public class ApiServices
 	{
 		private static readonly HttpClient client = new HttpClient();
-		private const string apiUrl = "http://37.193.240.201:11445/api/Sorter/UploadTable";
+		private const string apiUrl = "http://37.193.240.201:11445/api/";
 
 		public async Task HandleFileSelected(IBrowserFile File, string prompt)
 		{
@@ -23,7 +27,7 @@ namespace AI_Sorter.Services
 					content.Add(fileContent, "file", selectedFile.Name);
 					content.Add(new StringContent(prompt), "prompt");
 
-					var response = await client.PostAsync(apiUrl, content);
+					var response = await client.PostAsync(apiUrl + "Sorter/UploadTable", content);
 
 					if (response.IsSuccessStatusCode)
 					{
@@ -38,6 +42,22 @@ namespace AI_Sorter.Services
 			catch (Exception ex)
 			{
 			}
+		}
+
+		public static async Task<List<FileEntity>>UploadFile () 
+		{
+			List<FileEntity> fileEntity = new List<FileEntity>();
+
+			try
+			{
+				fileEntity = await client.GetFromJsonAsync<List<FileEntity>>(apiUrl + "Files/");
+			}
+			catch (Exception ex)
+			{
+
+			}
+
+			return fileEntity;
 		}
 	}
 }
