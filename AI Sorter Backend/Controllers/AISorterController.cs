@@ -70,6 +70,12 @@ namespace AI_Sorter_Backend.Controllers
     [Route("api/[controller]")]
     public class SorterController : ControllerBase
     {
+		private readonly ApplicationDbContext _context;
+		public SorterController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+        
         [HttpPost("UploadTable")]
         public async Task<IActionResult> UploadFile([FromForm] IFormFile file, [FromForm] string prompt)
         {
@@ -117,7 +123,12 @@ namespace AI_Sorter_Backend.Controllers
 
             await AnyPromptSortService.SortDatasheet(filePath, prompt);
 
-            return Ok(new { message = "File loaded!", newFileName = uniqueFileName });
+            FIleEntity fileEntityDB = new FIleEntity(0, file.Name, prompt, filePath, filePath, "process");
+
+            _context.BlazorApp.Add(fileEntityDB);
+			await _context.SaveChangesAsync();
+
+			return Ok(new { message = "File loaded!", newFileName = uniqueFileName });
         }
     }
 
