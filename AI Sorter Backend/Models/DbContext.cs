@@ -27,19 +27,23 @@ namespace AI_Sorter_Backend.Models
 
 				modelBuilder.Entity<FIleEntity>()
 					.Property(f => f.file_name)
-					.IsRequired();
-
-				modelBuilder.Entity<FIleEntity>()
-					.Property(f => f.path_file_itg)
-					.IsRequired();
-
-				modelBuilder.Entity<FIleEntity>()
-					.Property(f => f.promt_sort)
 					.IsRequired(false);
+
+				modelBuilder.Entity<FIleEntity>()
+					.Property(f => f.unic_file_name)
+					.IsRequired();
 
 				modelBuilder.Entity<FIleEntity>()
 					.Property(f => f.path_file)
 					.IsRequired(false);
+
+				modelBuilder.Entity<FIleEntity>()
+					.Property(f => f.path_file_competed)
+					.IsRequired();
+
+				modelBuilder.Entity<FIleEntity>()
+					.Property(f => f.datetime)
+					.IsRequired();
 
 				modelBuilder.Entity<FIleEntity>()
 					.Property(f => f.Status_sort)

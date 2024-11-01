@@ -123,7 +123,7 @@ namespace AI_Sorter_Backend.Controllers
 
             await AnyPromptSortService.SortDatasheet(filePath, prompt);
 
-            FIleEntity fileEntityDB = new FIleEntity(0, file.Name, prompt, filePath, filePath, "process");
+            FIleEntity fileEntityDB = new FIleEntity(0, file.FileName, uniqueFileName, filePath, filePath, "process");
 
             _context.BlazorApp.Add(fileEntityDB);
 			await _context.SaveChangesAsync();
@@ -143,13 +143,6 @@ namespace AI_Sorter_Backend.Controllers
             _context = context;
         }
 
-        [HttpPost]
-        public async Task<ActionResult<FIleEntity>> CreatePostgresFile([FromBody] FIleEntity postgresFile)
-        {
-            _context.BlazorApp.Add(postgresFile);
-            await _context.SaveChangesAsync();
-            return Ok(new { message = "Record created!", postgresFile });
-        }
         [HttpGet]
         public async Task<IEnumerable<FIleEntity>> GetFiles()
         {
