@@ -71,11 +71,11 @@ namespace AI_Sorter_Backend.Controllers
     public class SorterController : ControllerBase
     {
         [HttpPost("UploadTable")]
-        public async Task<IActionResult> UploadFile([FromForm] IFormFile file)
+        public async Task<IActionResult> UploadFile([FromForm] IFormFile file, [FromForm] string prompt)
         {
             if (file == null || file.Length == 0)
             {
-                return BadRequest(new { message = "Ôàéë íå âûáðàí" });
+                return BadRequest(new { message = "No file!" });
             }
 
             // Cheack for type of file
@@ -90,12 +90,12 @@ namespace AI_Sorter_Backend.Controllers
 
             if (!allowedExtensions.Contains(extension))
             {
-                return BadRequest(new { message = "Íåâåðíûé ôîðìàò ôàéëà. Ðàçðåøåíû òîëüêî .xls è .xlsx" });
+                return BadRequest(new { message = "Invalid type of file extension. Needed .xls or .xlsx" });
             }
 
             if (!allowedMimeTypes.Contains(file.ContentType))
             {
-                return BadRequest(new { message = "Íåâåðíûé MIME-òèï ôàéëà" });
+                return BadRequest(new { message = "Invalid MIME type" });
             }
 
             // Write file to filesystem
@@ -115,9 +115,9 @@ namespace AI_Sorter_Backend.Controllers
                 await file.CopyToAsync(fileStream);
             }
 
-            await AnyPromptSortService.SortDatasheet(filePath, "êîìïëåêòóþùèå, êîòîðûå íå îòíîñÿòñÿ ê ðåìîíòó ìàøèí");
+            await AnyPromptSortService.SortDatasheet(filePath, prompt);
 
-            return Ok(new { message = "Ôàéë çàãðóæåí", newFileName = uniqueFileName });
+            return Ok(new { message = "File loaded!", newFileName = uniqueFileName });
         }
     }
 
@@ -137,7 +137,7 @@ namespace AI_Sorter_Backend.Controllers
         {
             _context.BlazorApp.Add(postgresFile);
             await _context.SaveChangesAsync();
-            return Ok(new { message = "Çàïèñü äîáàâëåíà!", postgresFile });
+            return Ok(new { message = "Record created!", postgresFile });
         }
         [HttpGet]
         public async Task<IEnumerable<FIleEntity>> GetFiles()

@@ -21,18 +21,18 @@ namespace AI_Sorter.Services
 					fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(selectedFile.ContentType);
 
 					content.Add(fileContent, "file", selectedFile.Name);
-					//content.Add(new StringContent(prompt), "description");
+					content.Add(new StringContent(prompt), "prompt");
 
 					var response = await client.PostAsync(apiUrl, content);
 
-/*					if (response.IsSuccessStatusCode)
+					if (response.IsSuccessStatusCode)
 					{
-						uploadMessage = "Файл успешно загружен!";
+						Console.WriteLine("Файл успешно загружен!");
 					}
 					else
 					{
-						uploadMessage = "Ошибка загрузки файла.";
-					}*/
+						Console.WriteLine("Ошибка загрузки файла.");
+					}
 				}
 			}
 			catch (Exception ex)
