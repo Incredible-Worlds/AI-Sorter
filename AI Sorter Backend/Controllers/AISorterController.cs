@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using Microsoft.AspNetCore.Http.HttpResults;
+using AI_Sorter_Backend.Models;
+using static AI_Sorter_Backend.Models.DbContex;
 using AI_Sorter_Backend.Services;
 
 namespace AI_Sorter_Backend.Controllers
@@ -33,11 +35,11 @@ namespace AI_Sorter_Backend.Controllers
             }
             catch (HttpRequestException httpEx)
             {
-                return StatusCode(500, $"HTTP ошибка: {httpEx.Message}");
+                return StatusCode(500, $"HTTP Г®ГёГЁГЎГЄГ : {httpEx.Message}");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Ошибка: {ex.Message}");
+                return StatusCode(500, $"ГЋГёГЁГЎГЄГ : {ex.Message}");
             }
         }
 
@@ -54,12 +56,12 @@ namespace AI_Sorter_Backend.Controllers
                 }
                 else
                 {
-                    return $"Ошибка: {response.StatusCode}, {response.ReasonPhrase}";
+                    return $"ГЋГёГЁГЎГЄГ : {response.StatusCode}, {response.ReasonPhrase}";
                 }
             }
             catch (Exception ex)
             {
-                return $"Исключение: {ex.Message}";
+                return $"Г€Г±ГЄГ«ГѕГ·ГҐГ­ГЁГҐ: {ex.Message}";
             }
         }
     }
@@ -73,7 +75,7 @@ namespace AI_Sorter_Backend.Controllers
         {
             if (file == null || file.Length == 0)
             {
-                return BadRequest(new { message = "Файл не выбран" });
+                return BadRequest(new { message = "Г”Г Г©Г« Г­ГҐ ГўГ»ГЎГ°Г Г­" });
             }
 
             // Cheack for type of file
@@ -88,12 +90,12 @@ namespace AI_Sorter_Backend.Controllers
 
             if (!allowedExtensions.Contains(extension))
             {
-                return BadRequest(new { message = "Неверный формат файла. Разрешены только .xls и .xlsx" });
+                return BadRequest(new { message = "ГЌГҐГўГҐГ°Г­Г»Г© ГґГ®Г°Г¬Г ГІ ГґГ Г©Г«Г . ГђГ Г§Г°ГҐГёГҐГ­Г» ГІГ®Г«ГјГЄГ® .xls ГЁ .xlsx" });
             }
 
             if (!allowedMimeTypes.Contains(file.ContentType))
             {
-                return BadRequest(new { message = "Неверный MIME-тип файла" });
+                return BadRequest(new { message = "ГЌГҐГўГҐГ°Г­Г»Г© MIME-ГІГЁГЇ ГґГ Г©Г«Г " });
             }
 
             // Write file to filesystem
@@ -113,10 +115,35 @@ namespace AI_Sorter_Backend.Controllers
                 await file.CopyToAsync(fileStream);
             }
 
-            await AnyPromptSortService.SortDatasheet(filePath, "комплектующие, которые не относятся к ремонту машин");
+            await AnyPromptSortService.SortDatasheet(filePath, "ГЄГ®Г¬ГЇГ«ГҐГЄГІГіГѕГ№ГЁГҐ, ГЄГ®ГІГ®Г°Г»ГҐ Г­ГҐ Г®ГІГ­Г®Г±ГїГІГ±Гї ГЄ Г°ГҐГ¬Г®Г­ГІГі Г¬Г ГёГЁГ­");
 
-            return Ok(new { message = "Файл загружен", newFileName = uniqueFileName });
+            return Ok(new { message = "Г”Г Г©Г« Г§Г ГЈГ°ГіГ¦ГҐГ­", newFileName = uniqueFileName });
         }
     }
 
+    [Route("api/[controller]")]
+    [ApiController]
+    public class FilesController : ControllerBase
+    {
+        private readonly ApplicationDbContext _context;
+
+        public FilesController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<FIleEntity>> CreatePostgresFile([FromBody] FIleEntity postgresFile)
+        {
+            _context.BlazorApp.Add(postgresFile);
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "Г‡Г ГЇГЁГ±Гј Г¤Г®ГЎГ ГўГ«ГҐГ­Г !", postgresFile });
+        }
+        [HttpGet]
+        public async Task<IEnumerable<FIleEntity>> GetFiles()
+        {
+            return _context.BlazorApp.ToList();
+        }
+
+    }
 }
