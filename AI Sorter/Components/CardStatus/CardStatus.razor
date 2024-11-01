@@ -1,5 +1,7 @@
 ﻿@inject UploadFile UploadFile
 @inject ApiServices ApiServices
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JS
 
 <div>
 	<h2>Статус обработки</h2>
@@ -32,10 +34,10 @@
 		</div>
 		
 		@if (@item.Status_sort == "done") {
-			<button class="button">Скачать</button>
+			<a class="button" href="http://37.193.240.201:11445/api/Files/download/@item.unic_file_name">Скачать</a>
 		}
 		else {
-		<button disabled class="button">Скачать</button>
+			<a class="button disabled" href="">Скачать</a>
 		}
 	</div>
 }
@@ -57,7 +59,6 @@
 		{
 			fileEntity = await ApiServices.UploadFile();
 
-			Console.WriteLine("Функция сработала!");
 			StateHasChanged();
 		});
 	}
@@ -67,3 +68,4 @@
 		timer?.Dispose();
 	}
 }
+
