@@ -149,5 +149,18 @@ namespace AI_Sorter_Backend.Controllers
             return _context.BlazorApp.ToList();
         }
 
-    }
+		[HttpGet("download/{fileName}")]
+		public IActionResult DownloadFile(string fileName)
+		{
+			var filePath = Path.Combine("UploadedFiles", fileName); // Путь к файлу
+
+			if (!System.IO.File.Exists(filePath))
+			{
+				return NotFound();
+			}
+
+			var fileBytes = System.IO.File.ReadAllBytes(filePath);
+			return File(fileBytes, "application/octet-stream", fileName);
+		}
+	}
 }
