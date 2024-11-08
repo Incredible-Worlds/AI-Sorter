@@ -1,4 +1,7 @@
 ﻿@inject UploadFile UploadFile
+@inject ApiServices ApiServices
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JS
 
 <div>
 	<h2>Статус обработки</h2>
@@ -6,40 +9,63 @@
 	<hr />
 </div>
 
-<div class="file-card">
-	<div>
-		<div class="file-info-content">
-			<h3>Название файла.xlsx</h3>
-			<span class="vertical-line">|</span>
-			<p class="status-done">Готово</p>
+@foreach (var item in fileEntity)
+{
+	<div class="file-card">
+		<div>
+			<div class="file-info-content">
+				<h3>@item.file_name</h3>
+				<span class="vertical-line">|</span>
+				
+				@switch (@item.Status_sort)
+				{
+					case "done":
+						<p class="status-done">Готово</p>
+						break;
+					case "process":
+						<p class="status-progress">В процессе</p>
+						break;
+					case "error":
+						<p class="status-error">Произошла ошибка</p>
+						break;
+				}
+			</div>
+			<p class="file-date">01.01.2024</p>
 		</div>
-		<p class="file-date">01.01.2024</p>
+		
+		@if (@item.Status_sort == "done") {
+			<a class="button" href="http://37.193.240.201:11445/api/Files/download/@item.unic_file_name">Скачать</a>
+		}
+		else {
+			<a class="button disabled" href="">Скачать</a>
+		}
 	</div>
-	<button class="button">Скачать</button>
-</div>
-<div class="file-card">
-	<div>
-		<div class="file-info-content">
-			<h3>Название файла.xlsx</h3>
-			<span class="vertical-line">|</span>
-			<p class="status-progress">В процессе</p>
-		</div>
-		<p class="file-date">01.01.2024</p>
-	</div>
-	<button disabled class="button">Скачать</button>
-</div>
-<div class="file-card">
-	<div>
-		<div class="file-info-content">
-			<h3>Название файла.xlsx</h3>
-			<span class="vertical-line">|</span>
-			<p class="status-error">Произошла ошибка</p>
-		</div>
-		<p class="file-date">01.01.2024</p>
-	</div>
-	<button disabled class="button">Скачать</button>
-</div>
+}
 
 @code {
+	List<FileEntity> fileEntity = new List<FileEntity>();
+	Timer timer;
 
+	protected override void OnInitialized()
+	{
+		base.OnInitialized();
+
+		timer = new Timer(OnTimerElapsed, null, TimeSpan.Zero, TimeSpan.FromSeconds(30));
+	}
+
+	private void OnTimerElapsed(object state)
+	{
+		InvokeAsync(async () =>
+		{
+			fileEntity = await ApiServices.UploadFile();
+
+			StateHasChanged();
+		});
+	}
+
+	public void Dispose()
+	{
+		timer?.Dispose();
+	}
 }
+

@@ -104,6 +104,10 @@ li {
 
 }
 
+a {
+    text-decoration: none;
+}
+
 /*input[type="file"] {
     display: none;
 }*/
@@ -119,6 +123,12 @@ li {
     border-radius: 8px;
 
     cursor: pointer;
+}
+
+a.disabled {
+    cursor: default;
+    pointer-events: none;
+    background-color: var(--color-sub-main)
 }
 
 .button:disabled {
