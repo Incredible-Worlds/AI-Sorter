@@ -1,0 +1,91 @@
+﻿@inject UploadFile UploadFile
+@inject ApiServices ApiServices
+
+<div>
+	<h2>Загрузить файл</h2>
+
+	<hr />
+</div>
+
+<ul>
+	<li>Выберите файл в формате .xlsx или .xls</li>
+	<li>Перетащите файл или нажмите на “Выбрать файл”</li>
+	<li>Введите промпт для сортировки</li>
+	<li>Нажмите на кнопку “Начать” </li>
+</ul>
+
+<div id="uploadFile_Loader" >
+	<form action="/" method="post" @onsubmit="SendFileWithAPI">
+		<fieldset class="upload-zone @HoverClass" @ondragenter="OnDragEnter" @ondragleave="OnDragLeave" @ondragover="OnDragEnter">
+			
+			@* <p class="" id="filedrag">Перетащите файл или выберите на компьютере</p> *@
+			@if (string.IsNullOrEmpty(UploadFile.FileName))
+			{
+				<p>Выберите файл на компьютере</p>
+			}
+			else
+			{
+				<p>Загружен файл:</p>
+				<p>@UploadFile.FileName</p>
+			}
+			@* <p>Выберите файл на компьютере</p> *@
+			<label for="fileselect" class="fileselect" OnChange="UploadFile.UploadFiles">Выбрать файл</label>
+			<InputFile hidden id="fileselect" multiple OnChange="UploadFile.UploadFiles" accept=".xlsx,.xls" />
+
+			@* <input type="file" id="fileselect" name="fileselect[]" multiple="multiple"/> *@
+		</fieldset>
+
+		<fieldset class="prompt-zone">
+			<p>Введите промпт для сортировки:
+				<span class="tooltip">
+					<button class="tooltip-toggle" type="button">
+						<svg class="tooltip-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<circle opacity="1" cx="8" cy="8" r="8" fill="#1D5DEB" />
+							<path d="M7 4.848H8.932V3H7V4.848ZM7.084 6.29999V12.8H8.848V6.29999H7.084Z" fill="white" />
+						</svg>
+					</button>
+					<span class="tooltip-text">
+						Отсортируй список и выведи повторияющиеся данные
+					</span>
+				</span>
+			</p>
+
+
+			<div>
+				<textarea id="text" name="text" rows="5" @bind=PromptValue />
+			</div>
+		</fieldset>
+
+		<div class="button-center" id="submitbutton">
+			<button class="button" type="submit" >Начать</button>
+		</div>
+	</form>
+
+	<div style="padding-top: 20px">
+		<div>File name: @UploadFile.FileName</div>
+		<div>File size: @UploadFile.FileSize.ToString("n0") bytes</div>
+		<div>File type: @UploadFile.FileType</div>
+		<div>Last modified: @UploadFile.LastModified</div>
+	</div>
+
+	@if (!string.IsNullOrEmpty(UploadFile.ErrorMessage))
+	{
+		<div>Error: @UploadFile.ErrorMessage</div>
+	}
+
+</div>
+
+
+@code {
+	private string HoverClass = string.Empty;
+	private string PromptValue = "";
+	// private UploadFile UploaderService;
+
+	void OnDragEnter(DragEventArgs e) => HoverClass = "hover";
+	void OnDragLeave(DragEventArgs e) => HoverClass = string.Empty;
+
+	private async void SendFileWithAPI()
+	{
+		ApiServices.HandleFileSelected(UploadFile.GetFiles(), PromptValue);
+	}
+}
