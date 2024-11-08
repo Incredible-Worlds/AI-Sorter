@@ -132,22 +132,35 @@ namespace AI_Sorter_Backend.Controllers
         }
     }
 
-    [Route("api/[controller]")]
-    [ApiController]
-    public class FilesController : ControllerBase
-    {
-        private readonly ApplicationDbContext _context;
+	[Route("api/[controller]")]
+	[ApiController]
+	public class FilesController : ControllerBase
+	{
+		private readonly ApplicationDbContext _context;
 
-        public FilesController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+		public FilesController(ApplicationDbContext context)
+		{
+			_context = context;
+		}
 
-        [HttpGet]
-        public async Task<IEnumerable<FIleEntity>> GetFiles()
-        {
-            return _context.BlazorApp.ToList();
-        }
+		[HttpGet]
+		public async Task<IEnumerable<FIleEntity>> GetFiles()
+		{
+			return _context.BlazorApp.ToList();
+		}
 
-    }
+		[HttpGet("download/{fileName}")]
+		public IActionResult DownloadFile(string fileName)
+		{
+			var filePath = Path.Combine("UploadedFiles", fileName); // Путь к файлу
+
+			if (!System.IO.File.Exists(filePath))
+			{
+				return NotFound();
+			}
+
+			var fileBytes = System.IO.File.ReadAllBytes(filePath);
+			return File(fileBytes, "application/octet-stream", fileName);
+		}
+	}
 }
