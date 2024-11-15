@@ -16,7 +16,7 @@ namespace AI_Sorter_Backend.Models
 				if (!optionsBuilder.IsConfigured)
 				{
 					// Укажите строку подключения к вашей базе данных PostgreSQL
-					optionsBuilder.UseNpgsql("Host=localhost; Database=postgres; Username=postgres; Password=BlazorApp");
+					optionsBuilder.UseNpgsql("Host=db; Database=postgres; Username=postgres; Password=BlazorApp");
 				}
 			}
 

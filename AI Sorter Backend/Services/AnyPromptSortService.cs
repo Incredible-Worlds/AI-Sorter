@@ -135,7 +135,7 @@ public class AnyPromptSortService
 	private static async Task<List<string>> SendDataToAPI(string batchValues, string sortingPrompt)
     {
         HttpClient aspClient = new HttpClient();
-        const string apiUrl = "http://localhost:11434/api/generate";
+        const string apiUrl = "http://ollama:11434/api/generate";
 
         var requestData = new
         {

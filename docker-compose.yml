@@ -1,0 +1,49 @@
+services:
+  db:
+    image: postgres
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_PASSWORD: BlazorApp
+    volumes:
+      - ./bd/:/docker-entrypoint-initdb.d
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+  frontend:
+    build:
+      context: "./AI Sorter"
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
+    restart: always
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: "./AI Sorter Backend"
+      dockerfile: Dockerfile
+    ports:
+      - 5001:5001
+    restart: always
+    depends_on:
+      - db
+      - ollama
+
+  ollama:
+    image: ollama/ollama
+    restart: always
+    entrypoint: /root/entrypoint.sh
+    ports:
+      - 11434:11434
+    volumes:
+      - ollama:/root/.ollama
+      - ./entrypoint.sh:/root/entrypoint.sh
+
+volumes:
+  ollama:
