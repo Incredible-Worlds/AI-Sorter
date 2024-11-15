@@ -136,18 +136,18 @@ namespace AI_Sorter_Backend.Controllers
     [ApiController]
     public class FilesController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+		[HttpGet("download/{fileName}")]
+		public IActionResult DownloadFile(string fileName)
+		{
+			var filePath = Path.Combine("UploadedFiles", fileName); // Путь к файлу
 
-        public FilesController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+			if (!System.IO.File.Exists(filePath))
+			{
+				return NotFound();
+			}
 
-        [HttpGet]
-        public async Task<IEnumerable<FIleEntity>> GetFiles()
-        {
-            return _context.BlazorApp.ToList();
-        }
-
-    }
+			var fileBytes = System.IO.File.ReadAllBytes(filePath);
+			return File(fileBytes, "application/octet-stream", fileName);
+		}
+	}
 }
