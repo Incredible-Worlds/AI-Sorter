@@ -12,7 +12,7 @@ namespace AI_Sorter_Backend.Controllers
     public class ProxyController : ControllerBase
     {
         private readonly HttpClient _httpClient;
-        private const string ollamaApiUrl = "http://ollama:11434";
+        private const string ollamaApiUrl = "http://localhost:11434";
 
         public ProxyController(HttpClient httpClient)
         {
