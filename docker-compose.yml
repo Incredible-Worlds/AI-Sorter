@@ -13,6 +13,8 @@ services:
     restart: always
     ports:
       - 8080:8080
+    depends_on:
+      - db
 
   frontend:
     build:
@@ -36,11 +38,15 @@ services:
       - ollama
 
   ollama:
-    image: ollama/ollama
+    image: ollama/ollama:latest
     restart: always
-    entrypoint: /root/entrypoint.sh
+    expose:
+      - 11434/tcp
     ports:
       - 11434:11434
+    healthcheck:
+      test: ollama --version || exit 1
+    entrypoint: /usr/bin/sh /root/entrypoint.sh
     volumes:
       - ollama:/root/.ollama
       - ./entrypoint.sh:/root/entrypoint.sh

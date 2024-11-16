@@ -1,4 +1,2 @@
-#!/usr/bin/sh
-
-ollama serve
+ollama serve &
 ollama run gemma2
