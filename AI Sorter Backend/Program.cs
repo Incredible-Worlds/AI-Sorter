@@ -10,10 +10,15 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowLocalhost",
        builder =>
         {
-            builder.WithOrigins("https://localhost:7183", "http://localhost:5274", "http://localhost:80")
+            builder.WithOrigins("http://localhost:80","http://localhost")
                    .AllowAnyHeader()
                    .AllowAnyMethod();
         });
+});
+
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.Listen(System.Net.IPAddress.Any, 5001);
 });
 
 // Add services to the container.
@@ -27,7 +32,7 @@ builder.Services.AddSwaggerGen();
 
 // Adding a database connection
 builder.Services.AddDbContext<ApplicationDbContext>(options => 
-        options.UseNpgsql("Host=localhost; Database=postgres; Username=postgres; Password=BlazorApp"));
+        options.UseNpgsql("Host=db; Database=postgres; Username=postgres; Password=BlazorApp"));
 
 var app = builder.Build();
 
@@ -48,5 +53,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
-

@@ -44,8 +44,6 @@ services:
       - 11434/tcp
     ports:
       - 11434:11434
-    healthcheck:
-      test: ollama --version || exit 1
     entrypoint: /usr/bin/sh /root/entrypoint.sh
     volumes:
       - ollama:/root/.ollama
