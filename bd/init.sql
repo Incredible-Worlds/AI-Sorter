@@ -7,5 +7,5 @@ CREATE TABLE "public"."BlazorApp" (
     "path_file" text,
     "path_file_competed" text NOT NULL,
     "Status_sort" text,
-    "Datetime" timestamp
+    "datetime" timestamp
 ) WITH (oids = false);
