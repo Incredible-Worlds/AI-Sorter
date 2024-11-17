@@ -10,9 +10,10 @@ namespace AI_Sorter.Services
 	public class ApiServices
 	{
 		private static readonly HttpClient client = new HttpClient();
-		private const string apiUrl = "http://localhost:5001/api/";
+        private static readonly string? BackUrl = Environment.GetEnvironmentVariable("BACK_HOST");
+        private static readonly string apiUrl = $"http://{BackUrl}:5001/api/";
 
-		public async Task HandleFileSelected(IBrowserFile File, string prompt)
+        public async Task HandleFileSelected(IBrowserFile File, string prompt)
 		{
 			try
 			{
