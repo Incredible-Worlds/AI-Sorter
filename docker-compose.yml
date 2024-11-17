@@ -25,6 +25,9 @@ services:
     restart: always
     depends_on:
       - backend
+    env_file:
+      - .env
+
 
   backend:
     build:
@@ -36,6 +39,8 @@ services:
     depends_on:
       - db
       - ollama
+    env_file:
+      - .env
 
   ollama:
     image: ollama/ollama:latest
