@@ -2,14 +2,17 @@ services:
   db:
     image: postgres
     restart: always
+    container_name: ai-db
     shm_size: 128mb
     environment:
       POSTGRES_PASSWORD: BlazorApp
     volumes:
       - ./bd/:/docker-entrypoint-initdb.d
+      - ai-db:/var/lib/postgresql/data
 
   adminer:
     image: adminer
+    container_name: ai-adminer
     restart: always
     ports:
       - 8080:8080
@@ -17,9 +20,8 @@ services:
       - db
 
   frontend:
-    build:
-      context: "./AI Sorter"
-      dockerfile: Dockerfile
+    image: ai-sorter-frontend
+    container_name: ai-front
     ports:
       - 80:80
     restart: always
@@ -27,9 +29,8 @@ services:
       - backend
 
   backend:
-    build:
-      context: "./AI Sorter Backend"
-      dockerfile: Dockerfile
+    image: ai-sorter-backend
+    container_name: ai-back
     ports:
       - 5001:5001
     restart: always
@@ -39,6 +40,7 @@ services:
 
   ollama:
     image: ollama/ollama:latest
+    container_name: ai-ollama
     restart: always
     environment:
       - OLLAMA_DEBUG=1
@@ -47,7 +49,8 @@ services:
     ports:
       - 11434:11434
     volumes:
-      - ollama:/root/.ollama
+      - ./ollama:/root/.ollama
 
 volumes:
-  ollama:
+  ai-db:
+    driver: local
