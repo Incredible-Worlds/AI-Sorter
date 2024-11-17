@@ -40,16 +40,14 @@ services:
   ollama:
     image: ollama/ollama:latest
     restart: always
+    environment:
+      - OLLAMA_DEBUG=1
     expose:
       - 11434/tcp
     ports:
       - 11434:11434
-    healthcheck:
-      test: ollama --version || exit 1
-    entrypoint: /usr/bin/sh /root/entrypoint.sh
     volumes:
       - ollama:/root/.ollama
-      - ./entrypoint.sh:/root/entrypoint.sh
 
 volumes:
   ollama:
