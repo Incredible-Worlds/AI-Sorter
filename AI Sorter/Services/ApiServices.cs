@@ -10,7 +10,7 @@ namespace AI_Sorter.Services
 	public class ApiServices
 	{
 		private static readonly HttpClient client = new HttpClient();
-		private const string apiUrl = "http://localhost:5001/api/";
+		private const string apiUrl = "http://ai-sortme.local/api/";
 
 		public async Task HandleFileSelected(IBrowserFile File, string prompt)
 		{

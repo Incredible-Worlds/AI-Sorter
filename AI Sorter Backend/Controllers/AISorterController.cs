@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using AI_Sorter_Backend.Models;
 using static AI_Sorter_Backend.Models.DbContex;
 using AI_Sorter_Backend.Services;
+using Microsoft.AspNetCore.Cors;
 
 namespace AI_Sorter_Backend.Controllers
 {
@@ -70,12 +71,13 @@ namespace AI_Sorter_Backend.Controllers
     [Route("api/[controller]")]
     public class SorterController : ControllerBase
     {
-		private readonly ApplicationDbContext _context;
-		public SorterController(ApplicationDbContext context)
+        private readonly ApplicationDbContext _context;
+        public SorterController(ApplicationDbContext context)
         {
             _context = context;
         }
-        
+
+        [DisableCors]        
         [HttpPost("UploadTable")]
         public async Task<IActionResult> UploadFile([FromForm] IFormFile file, [FromForm] string prompt)
         {
@@ -136,7 +138,19 @@ namespace AI_Sorter_Backend.Controllers
     [ApiController]
     public class FilesController : ControllerBase
     {
-		[HttpGet("download/{fileName}")]
+        private readonly ApplicationDbContext _context;
+
+        public FilesController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+        [DisableCors]
+        [HttpGet]
+        public async Task<IEnumerable<FIleEntity>> GetFiles()
+        {
+            return _context.BlazorApp.ToList();
+        }
+        [HttpGet("download/{fileName}")]
 		public IActionResult DownloadFile(string fileName)
 		{
 			var filePath = Path.Combine("UploadedFiles", fileName); // Путь к файлу
@@ -150,4 +164,5 @@ namespace AI_Sorter_Backend.Controllers
 			return File(fileBytes, "application/octet-stream", fileName);
 		}
 	}
+
 }
