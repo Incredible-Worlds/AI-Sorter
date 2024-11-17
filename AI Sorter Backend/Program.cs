@@ -10,8 +10,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowLocalhost",
        builder =>
         {
-            builder.WithOrigins("http://localhost:80","http://localhost")
-                   .AllowAnyHeader()
+            builder.AllowAnyOrigin()
+				   .AllowAnyHeader()
                    .AllowAnyMethod();
         });
 });
