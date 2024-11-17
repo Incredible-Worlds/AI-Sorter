@@ -7,15 +7,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Разрешаем CORS для localhost
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("CorsPolicy",
-      builder =>
-      {
-          builder
-          .AllowAnyHeader()
-          .AllowAnyMethod()
-          .AllowCredentials()
-          .WithOrigins("http://ai-sortme.local");
-      });
+    options.AddPolicy("AllowLocalhost",
+       builder =>
+        {
+            builder.WithOrigins("http://localhost:80","http://localhost")
+                   .AllowAnyHeader()
+                   .AllowAnyMethod();
+        });
 });
 
 builder.WebHost.ConfigureKestrel(serverOptions =>
