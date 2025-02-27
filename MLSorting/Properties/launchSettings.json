@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "MLSorting": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}
