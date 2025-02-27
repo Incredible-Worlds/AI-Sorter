@@ -45,11 +45,33 @@ else
 	_predictionEngine = _mlContext.Model.CreatePredictionEngine<DataDefinition, PartsPredictions>(_model);
 }
 
+//
+// СЮДЫ ПИХАТЬ ДАННЫЕ НА ПРОВЕРКУ (Я сделаю сервис из этого, обещаю)
+//
 
-var preditionTest = "Issue";
+var preditionTest = "Прокладка впускного коллектора  WP6G";
 Console.WriteLine($"PartsPredictions for {preditionTest}");
 Console.WriteLine(PredictPartForSubjectline(preditionTest));
 
+preditionTest = "Штуцер соединения РВД 32/27, МТЗ-32/27";
+Console.WriteLine($"PartsPredictions for {preditionTest}");
+Console.WriteLine(PredictPartForSubjectline(preditionTest));
+
+preditionTest = "Блок управления ДВС с прошивкой (ЕСМ) C4995445 ISBe ЕВРО4";
+Console.WriteLine($"PartsPredictions for {preditionTest}");
+Console.WriteLine(PredictPartForSubjectline(preditionTest));
+
+preditionTest = "Распылитель ускорительного насоса САН-Д 21073-1107370";
+Console.WriteLine($"PartsPredictions for {preditionTest}");
+Console.WriteLine(PredictPartForSubjectline(preditionTest));
+
+preditionTest = "Смартфон Xiaomi Redmi 8A 2/32GB чёрный";
+Console.WriteLine($"PartsPredictions for {preditionTest}");
+Console.WriteLine(PredictPartForSubjectline(preditionTest));
+
+preditionTest = "Конфеты Chupa Chups Карамель XXL 4D, 29 г х 60 шт";
+Console.WriteLine($"PartsPredictions for {preditionTest}");
+Console.WriteLine(PredictPartForSubjectline(preditionTest));
 
 
 string PredictPartForSubjectline(string objectLine)
