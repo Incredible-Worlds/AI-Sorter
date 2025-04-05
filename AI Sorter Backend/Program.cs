@@ -4,13 +4,13 @@ using static AI_Sorter_Backend.Models.DbContex;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Разрешаем CORS для localhost
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ CORS пїЅпїЅпїЅ localhost
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowLocalhost",
        builder =>
         {
-            builder.WithOrigins("http://localhost:80","http://localhost")
+            builder.WithOrigins("http://ai-sortme.local:80","http://ai-sortme.local")
                    .AllowAnyHeader()
                    .AllowAnyMethod();
         });
