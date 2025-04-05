@@ -9,7 +9,7 @@
 
 <ul>
 	<li>Выберите файл в формате .xlsx или .xls</li>
-	<li>Перетащите файл или нажмите на “Выбрать файл”</li>
+	<li>Нажмите на “Выбрать файл”</li>
 	<li>Введите промпт для сортировки</li>
 	<li>Нажмите на кнопку “Начать” </li>
 </ul>
@@ -45,7 +45,7 @@
 						</svg>
 					</button>
 					<span class="tooltip-text">
-						Отсортируй список и выведи повторияющиеся данные
+						Пример: отсортируй список и выведи повторияющиеся данные
 					</span>
 				</span>
 			</p>
@@ -61,12 +61,12 @@
 		</div>
 	</form>
 
-	<div style="padding-top: 20px">
+@* 	<div style="padding-top: 20px">
 		<div>File name: @UploadFile.FileName</div>
 		<div>File size: @UploadFile.FileSize.ToString("n0") bytes</div>
 		<div>File type: @UploadFile.FileType</div>
 		<div>Last modified: @UploadFile.LastModified</div>
-	</div>
+	</div> *@
 
 	@if (!string.IsNullOrEmpty(UploadFile.ErrorMessage))
 	{

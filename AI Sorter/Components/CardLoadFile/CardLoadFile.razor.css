@@ -42,7 +42,12 @@
     text-decoration: underline;
     text-underline-offset: 4px;
     font-weight: 700;
+    transition: all 0.2s ease;
 }
+
+    .fileselect:hover {
+        color: var(--color-main-hover);
+    }
 
 .tooltip {
     position: absolute;

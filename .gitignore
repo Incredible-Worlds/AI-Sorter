@@ -365,3 +365,5 @@ FodyWeavers.xsd
 # Temp table files 
 *.xls
 *.xlsx
+
+*.tar

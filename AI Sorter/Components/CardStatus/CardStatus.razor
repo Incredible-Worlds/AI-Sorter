@@ -1,11 +1,12 @@
-﻿@inject UploadFile UploadFile
+﻿@using System.Diagnostics
+@inject UploadFile UploadFile
 @inject ApiServices ApiServices
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JS
 
 <div>
 	<h2>Статус обработки</h2>
-
+	<p>Оновление статуса через 00 секунд/ы</p>
 	<hr />
 </div>
 
@@ -30,7 +31,7 @@
 						break;
 				}
 			</div>
-			<p class="file-date">01.01.2024</p>
+			<p class="file-date">@item.datetime</p>
 		</div>
 		
 		@if (@item.Status_sort == "done") {
@@ -50,7 +51,7 @@
 	{
 		base.OnInitialized();
 
-		timer = new Timer(OnTimerElapsed, null, TimeSpan.Zero, TimeSpan.FromSeconds(30));
+		timer = new Timer(OnTimerElapsed, null, TimeSpan.Zero, TimeSpan.FromSeconds(15));
 	}
 
 	private void OnTimerElapsed(object state)

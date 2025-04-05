@@ -7,6 +7,7 @@
     --color-grey: #8F8F8F;
     --color-light-grey: #E1E1E1;
     --color-main: #1D5DEB;
+    --color-main-hover: #1042B1;
     --color-sub-main: #4D83FA;
     --color-background: #FAFCFF;
     --color-error: #E11432;
@@ -117,13 +118,15 @@ a {
     color: var(--color-white);
     font-size: 16px;
     font-weight: 700;
-
     background-color: var(--color-main);
-
     border-radius: 8px;
-
     cursor: pointer;
+    transition: all 0.2s ease;
 }
+
+    .button:hover {
+        background-color: var(--color-main-hover);
+    }
 
 a.disabled {
     cursor: default;
@@ -143,6 +146,7 @@ textarea {
     width: 100%;
     min-height: 30px;
     resize: vertical;
+    padding: 8px;
 }
 
 textarea:target {
