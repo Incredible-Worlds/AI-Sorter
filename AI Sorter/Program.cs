@@ -1,5 +1,7 @@
 using AI_Sorter;
 using AI_Sorter.Services;
+using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -13,5 +15,17 @@ builder.Services.AddSingleton<MarkdownService>();
 builder.Services.AddSingleton<OllamaApiService>();
 builder.Services.AddSingleton<UploadFile>();
 builder.Services.AddSingleton<ApiServices>();
+
+builder.Services.AddBlazoredLocalStorage();
+
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+builder.Services.AddAuthorizationCore();
+
+builder.Services.AddScoped<AuthService>();
+
+builder.Services.AddScoped(sp =>
+	new HttpClient { BaseAddress = new Uri("http://ai-sortme.local/api/") }); // или твой адрес сервера
+
+
 
 await builder.Build().RunAsync();
