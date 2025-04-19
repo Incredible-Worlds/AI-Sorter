@@ -1,5 +1,8 @@
 using AI_Sorter_Backend.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using static AI_Sorter_Backend.Models.DbContex;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,6 +36,24 @@ builder.Services.AddSwaggerGen();
 // Adding a database connection
 builder.Services.AddDbContext<ApplicationDbContext>(options => 
         options.UseNpgsql("Host=db; Database=postgres; Username=postgres; Password=BlazorApp"));
+
+// Jwt keys
+builder.Services.AddAuthentication("Bearer")
+	.AddJwtBearer("Bearer", options =>
+	{
+		options.TokenValidationParameters = new TokenValidationParameters
+		{
+			ValidateIssuer = true,
+			ValidateAudience = false,
+			ValidateLifetime = true,
+			ValidateIssuerSigningKey = true,
+			ValidIssuer = builder.Configuration["Jwt:Issuer"],
+			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+		};
+	});
+
+builder.Services.AddAuthorization();
+
 
 var app = builder.Build();
 
