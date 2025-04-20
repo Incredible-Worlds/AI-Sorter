@@ -1,10 +1,9 @@
-﻿@page "/"
+﻿@page "/login"
 @inject IJSRuntime JS
 @inject HttpClient Http
 @inject AuthService AuthService
 @inject NavigationManager Navigation
-
-<base href="/" />
+@inject AuthenticationStateProvider authStateProvider
 
 <PageTitle>AI Sorter - Авторизация</PageTitle>
 
@@ -19,8 +18,8 @@
 		<DataAnnotationsValidator />
         <div>
             <label>Имя пользователя:</label>
-            <InputText id="login_input" @bind-Value="loginData.Username" />
-            <ValidationMessage For="@(() => loginData.Username)" />
+            <InputText id="login_input" @bind-Value="loginData.Login" />
+            <ValidationMessage For="@(() => loginData.Login)" />
         </div>
 
         <div>
@@ -49,16 +48,21 @@
 
         try
         {
-            var response = await Http.PostAsJsonAsync("api/auth/login", loginData);
+            var response = await Http.PostAsJsonAsync("auth/login", loginData);
+            var result = await response.Content.ReadFromJsonAsync<AuthResult>();
+
             if (response.IsSuccessStatusCode)
             {
-                var token = await response.Content.ReadAsStringAsync();
-                await JS.InvokeVoidAsync("localStorage.setItem", "authToken", token);
+                await JS.InvokeVoidAsync("localStorage.setItem", "authToken", result.token);
+                if (authStateProvider is CustomAuthStateProvider customProvider)
+                {
+                    customProvider.NotifyUserAuthentication(result.token);
+                }
                 Navigation.NavigateTo("/");
             }
             else
             {
-                errorMessage = "Неверные данные для входа.";
+				errorMessage = response.Content.ReadAsStringAsync().Result;
             }
         }
         catch (Exception ex)

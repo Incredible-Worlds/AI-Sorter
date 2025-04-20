@@ -50,6 +50,17 @@ namespace AI_Sorter_Backend.Models
 				modelBuilder.Entity<FIleEntity>()
 					.Property(f => f.Status_sort)
 					.IsRequired(false);
+
+				modelBuilder.Entity<Users>()
+					.HasKey(f => f.id);
+
+				modelBuilder.Entity<Users>()
+					.Property(f => f.login)
+					.IsRequired();
+
+				modelBuilder.Entity<Users>()
+					.Property(f => f.passwordHash)
+					.IsRequired();
 			}
 		}
     }

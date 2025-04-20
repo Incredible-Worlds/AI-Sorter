@@ -19,13 +19,14 @@ builder.Services.AddSingleton<ApiServices>();
 builder.Services.AddBlazoredLocalStorage();
 
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+builder.Services.AddScoped<CustomAuthStateProvider>();
 builder.Services.AddAuthorizationCore();
 
 builder.Services.AddScoped<AuthService>();
 
 builder.Services.AddScoped(sp =>
-	new HttpClient { BaseAddress = new Uri("http://ai-sortme.local/api/") }); // или твой адрес сервера
-
+	new HttpClient { BaseAddress = new Uri("http://ai-sortme.local/api/") });
+builder.Services.AddBlazoredLocalStorage();
 
 
 await builder.Build().RunAsync();

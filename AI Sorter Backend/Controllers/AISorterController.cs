@@ -1,12 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
-using Microsoft.AspNetCore.Http.HttpResults;
 using AI_Sorter_Backend.Models;
 using static AI_Sorter_Backend.Models.DbContex;
 using AI_Sorter_Backend.Services;
 using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Identity.Data;
-using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -189,13 +186,11 @@ namespace AI_Sorter_Backend.Controllers
 		{
 			var user = await _context.Users.FirstOrDefaultAsync(u => u.login == request.Login);
 			if (user == null)
-				return Unauthorized();
+				return BadRequest(new { message = "Неизвестный логин" });
 
-			var hasher = new PasswordHasher<Users>();
-			var result = hasher.VerifyHashedPassword(user, user.passwordHash, request.Password);
-
-			if (result == PasswordVerificationResult.Failed)
-				return Unauthorized();
+			bool isValidPassword = BCrypt.Net.BCrypt.Verify(request.Password, user.passwordHash);
+			if (!isValidPassword)
+				return BadRequest(new { message = "Неизвестный пароль" });
 
 			var token = GenerateJwtToken(user);
 			return Ok(new { token });
