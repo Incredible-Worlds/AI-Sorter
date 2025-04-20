@@ -1,9 +1,15 @@
-﻿namespace AI_Sorter_Backend.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace AI_Sorter_Backend.Models
 {
 	public class Users
 	{
-		public int Id { get; set; }
-		public string Login { get; set; } = string.Empty;
-		public string PasswordHash { get; set; } = string.Empty;
+		public int id { get; set; }
+
+		[Required]
+		public string login { get; set; } = string.Empty;
+
+		[Required]
+		public string passwordHash { get; set; } = string.Empty;
 	}
 }

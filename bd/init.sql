@@ -9,3 +9,10 @@ CREATE TABLE "public"."BlazorApp" (
     "Status_sort" text,
     "datetime" timestamp
 ) WITH (oids = false);
+
+CREATE TABLE "public"."Users" (
+    "id" SERIAL PRIMARY KEY,
+    "login" text NOT NULL UNIQUE,
+    "passwordHash" text NOT NULL,
+    "role" text NOT NULL DEFAULT 'User'
+);
