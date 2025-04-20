@@ -1,7 +1,69 @@
 ﻿@page "/"
-
+@inject IJSRuntime JS
+@inject HttpClient Http
 @inject AuthService AuthService
 @inject NavigationManager Navigation
 
 <base href="/" />
-<p>	ВЫ НЕ АВТОРИЗОВАНЫ</p>
+
+<PageTitle>AI Sorter - Авторизация</PageTitle>
+
+<section class="container login-wrapper">
+    <EditForm Model="loginData" OnValidSubmit="HandleLogin" class="card login-card">
+        
+        <div>
+            <h2>Авторизация</h2>
+
+            <hr />
+        </div>
+		<DataAnnotationsValidator />
+        <div>
+            <label>Имя пользователя:</label>
+            <InputText id="login_input" @bind-Value="loginData.Username" />
+            <ValidationMessage For="@(() => loginData.Username)" />
+        </div>
+
+        <div>
+            <label>Пароль:</label>
+            <InputText id="password_input" @bind-Value="loginData.Password" type="password"/>
+            <ValidationMessage For="@(() => loginData.Password)" />
+        </div>
+
+
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <p style="color:red">@errorMessage</p>
+        }
+		<button class="button" type="submit">Войти</button>
+	</EditForm>
+ </section>
+
+
+@code {
+    private LoginRequest loginData = new();
+    private string? errorMessage;
+
+    private async Task HandleLogin()
+    {
+        errorMessage = null;
+
+        try
+        {
+            var response = await Http.PostAsJsonAsync("api/auth/login", loginData);
+            if (response.IsSuccessStatusCode)
+            {
+                var token = await response.Content.ReadAsStringAsync();
+                await JS.InvokeVoidAsync("localStorage.setItem", "authToken", token);
+                Navigation.NavigateTo("/");
+            }
+            else
+            {
+                errorMessage = "Неверные данные для входа.";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Ошибка: {ex.Message}";
+        }
+    }
+}
