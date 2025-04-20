@@ -9,3 +9,4 @@ docker load -i ./adminer.tar
 docker load -i ./postgres.tar
 echo Running docker
 docker compose up -d --build
+pause

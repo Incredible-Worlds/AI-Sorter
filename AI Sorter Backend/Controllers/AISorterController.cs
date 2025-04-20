@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.EntityFrameworkCore;
 
 namespace AI_Sorter_Backend.Controllers
 {
@@ -184,13 +185,13 @@ namespace AI_Sorter_Backend.Controllers
 		}
 
 		[HttpPost("login")]
-		public async Task<IActionResult> Login([FromBody] LoginRequest request)
+		public async Task<IActionResult> Login([FromBody] Models.LoginRequest request)
 		{
 			var user = await _context.Users.FirstOrDefaultAsync(u => u.Login == request.Login);
 			if (user == null)
 				return Unauthorized();
 
-			var hasher = new PasswordHasher<User>();
+			var hasher = new PasswordHasher<Users>();
 			var result = hasher.VerifyHashedPassword(user, user.PasswordHash, request.Password);
 
 			if (result == PasswordVerificationResult.Failed)
@@ -200,7 +201,7 @@ namespace AI_Sorter_Backend.Controllers
 			return Ok(new { token });
 		}
 
-		private string GenerateJwtToken(User user)
+		private string GenerateJwtToken(Users user)
 		{
 			var claims = new[]
 			{

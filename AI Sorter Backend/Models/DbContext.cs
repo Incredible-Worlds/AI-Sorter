@@ -11,7 +11,7 @@ namespace AI_Sorter_Backend.Models
 
 			public DbSet<FIleEntity> BlazorApp { get; set; }
 
-			public DbSet<User> Users { get; set; } = default!;
+			public DbSet<Users> Users { get; set; } = default!;
 
 			protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 			{

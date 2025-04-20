@@ -19,10 +19,12 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
 	{
 		var token = await _localStorage.GetItemAsync<string>("authToken");
 
-		var identity = string.IsNullOrWhiteSpace(token)
-			? new ClaimsIdentity()
-			: new ClaimsIdentity(ParseClaimsFromJwt(token), "jwt");
+		if (string.IsNullOrWhiteSpace(token))
+		{
+			return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
+		}
 
+		var identity = new ClaimsIdentity(ParseClaimsFromJwt(token), "jwt");
 		var user = new ClaimsPrincipal(identity);
 		return new AuthenticationState(user);
 	}

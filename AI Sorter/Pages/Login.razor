@@ -1,20 +1,7 @@
-﻿@page "/login"
+﻿@page "/"
 
 @inject AuthService AuthService
 @inject NavigationManager Navigation
 
-<input @bind="LoginIn" placeholder="Login" />
-<input @bind="Password" placeholder="Password" type="password" />
-<button @onclick="DoLogin">Login</button>
-
-@code {
-    string LoginIn = "";
-    string Password = "";
-
-    async Task DoLogin()
-    {
-        var success = await AuthService.Login(LoginIn, Password);
-        if (success) Navigation.NavigateTo("/");
-        else Console.WriteLine("Неверные данные");
-    }
-}
+<base href="/" />
+<p>	ВЫ НЕ АВТОРИЗОВАНЫ</p>
