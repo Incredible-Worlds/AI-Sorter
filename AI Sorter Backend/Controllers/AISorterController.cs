@@ -187,12 +187,12 @@ namespace AI_Sorter_Backend.Controllers
 		[HttpPost("login")]
 		public async Task<IActionResult> Login([FromBody] Models.LoginRequest request)
 		{
-			var user = await _context.Users.FirstOrDefaultAsync(u => u.Login == request.Login);
+			var user = await _context.Users.FirstOrDefaultAsync(u => u.login == request.Login);
 			if (user == null)
 				return Unauthorized();
 
 			var hasher = new PasswordHasher<Users>();
-			var result = hasher.VerifyHashedPassword(user, user.PasswordHash, request.Password);
+			var result = hasher.VerifyHashedPassword(user, user.passwordHash, request.Password);
 
 			if (result == PasswordVerificationResult.Failed)
 				return Unauthorized();
@@ -205,8 +205,8 @@ namespace AI_Sorter_Backend.Controllers
 		{
 			var claims = new[]
 			{
-			new Claim(ClaimTypes.Name, user.Login),
-			new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+			new Claim(ClaimTypes.Name, user.login),
+			new Claim(ClaimTypes.NameIdentifier, user.id.ToString())
 		};
 
 			var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
