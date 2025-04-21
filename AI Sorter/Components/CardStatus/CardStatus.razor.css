@@ -1,4 +1,4 @@
-﻿.file-card {
+﻿/*.file-card {
     display: flex;
     justify-content: space-between;
     padding: 18px 24px;
@@ -28,4 +28,4 @@
     font-size: 12px;
     color: var(--color-grey);
     padding-top: 8px;
-}
+}*/

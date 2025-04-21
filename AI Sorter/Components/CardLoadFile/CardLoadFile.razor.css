@@ -1,4 +1,4 @@
-﻿.upload-zone {
+﻿/*.upload-zone {
     width: 100%;
 
     display: flex;
@@ -16,9 +16,9 @@
     border: 3px dashed #FFD2D2;
 }
 
-::deep input[type="file"] {
+::deep input[type="file"] {*/
     /*display: none;*/
-    width: 100%;
+    /*width: 100%;
     padding: 20px
 }
 
@@ -97,4 +97,4 @@
 .tooltip-toggle:hover + .tooltip-text,
 .tooltip-toggle:focus + .tooltip-text {
     display: block;
-}
+}*/
