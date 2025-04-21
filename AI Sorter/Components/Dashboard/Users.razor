@@ -1,0 +1,102 @@
+﻿@inject HttpClient Http
+@inject AuthService AuthService
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider authStateProvider
+
+<div>
+    <div class="dashboard-header-wrapper">
+		<h2>Пользователи</h2>
+        <button type="button" class="button button-add" @onclick="this.OpenDialog">Добавить</button>
+    </div>
+
+	<hr />
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th style="width: 60px">№</th>
+            <th>Имя пользователя</th>
+            <th style="width: 60px"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1</td>
+            <td>Олег Макетов</td>
+            <td><button class="button button-del">Удалить</button></td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>Олег Макетов</td>
+            <td><button class="button button-del">Удалить</button></td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>Олег Макетов</td>
+            <td><button class="button button-del">Удалить</button></td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="modal-back @_dialogCss">
+    <div class="modal">
+		<EditForm Model="loginData" OnValidSubmit="HandleLogin" class="card login-card">
+
+			<div>
+				<h2>Добавить пользователя</h2>
+
+				<hr />
+			</div>
+			<DataAnnotationsValidator />
+			<div>
+				<label>Имя пользователя:</label>
+				<InputText id="login_input" @bind-Value="loginData.Login" />
+				<ValidationMessage For="@(() => loginData.Login)" />
+			</div>
+
+			<div>
+				<label>Пароль:</label>
+				<InputText id="password_input" @bind-Value="loginData.Password" type="password" />
+				<ValidationMessage For="@(() => loginData.Password)" />
+			</div>
+
+
+			@if (!string.IsNullOrEmpty(errorMessage))
+			{
+				<p style="color:red">@errorMessage</p>
+			}
+			<div>
+				<button class="button" type="submit">Добавить</button>
+                <button type="button" @onclick="this.CloseDialog" class="button button-cancel">Закрыть</button>
+			</div>
+
+		</EditForm>
+    </div>
+
+</div>
+
+@code {
+    private LoginRequest loginData = new();
+    private string? errorMessage;
+
+    private bool _dialogOpen;
+    private string _dialogCss => _dialogOpen ? "show": "hide";
+
+    private Task OpenDialog()
+    {
+        _dialogOpen = true;
+        return Task.CompletedTask;
+    }
+
+    private Task CloseDialog()
+    {
+        _dialogOpen = false;
+        return Task.CompletedTask;
+    }
+
+    private async Task HandleLogin()
+    {
+
+    }
+}
