@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using static AI_Sorter_Backend.Models.DbContex;
 using AI_Sorter_Backend.Services;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,7 +56,12 @@ builder.Services.AddAuthentication("Bearer")
 
 builder.Services.AddAuthorization();
 
-builder.Services.AddScoped<SystemInfoService>();
+Log.Logger = new LoggerConfiguration()
+	.WriteTo.Console()  // Логирование в консоль
+	.WriteTo.File("/app/Logs/log-.txt", rollingInterval: RollingInterval.Day) // Логирование в файл
+	.CreateLogger();
+
+builder.Host.UseSerilog(); // Используем Serilog для логирования в приложении
 
 var app = builder.Build();
 
