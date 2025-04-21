@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using static AI_Sorter_Backend.Models.DbContex;
+using AI_Sorter_Backend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,6 +55,7 @@ builder.Services.AddAuthentication("Bearer")
 
 builder.Services.AddAuthorization();
 
+builder.Services.AddScoped<SystemInfoService>();
 
 var app = builder.Build();
 

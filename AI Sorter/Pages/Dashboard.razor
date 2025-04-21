@@ -1,4 +1,5 @@
 ﻿@page "/dashboard"
+@inject HttpClient Http
 @attribute [Authorize(Roles = "admin")]
 
 <div class="sidebar">
@@ -8,6 +9,23 @@
         <li>📄 Логи</li>
         <li>📊 Статистика</li>
     </ul>
+</div>
+
+
+<div>
+    @if (status != null)
+    {
+        <div class="card">
+            <h3>CPU</h3>
+            <p>@status.CpuName</p>
+            <p>Load: @status.Load %</p>
+        </div>
+        <div class="card">
+            <h3>Memory</h3>
+            <p>Free: @(status.MemoryAvailable / (1024 * 1024)) MB</p>
+            <p>Total: @(status.MemoryTotal / (1024 * 1024)) MB</p>
+        </div>
+    }
 </div>
 
 @code {
@@ -20,4 +38,19 @@
     }
 
     string GetActive(string section) => section == activeSection ? "active" : "";
+
+    private SystemStatus? status;
+
+    protected override async Task OnInitializedAsync()
+    {
+        status = await Http.GetFromJsonAsync<SystemStatus>("system/load");
+    }
+
+    public class SystemStatus
+    {
+        public string? CpuName { get; set; }
+        public double Load { get; set; }
+        public ulong MemoryAvailable { get; set; }
+        public ulong MemoryTotal { get; set; }
+    }
 }
