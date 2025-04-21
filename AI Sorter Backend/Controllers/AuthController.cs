@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Text;
+using Serilog;
 using AI_Sorter_Backend.Models;
 using static AI_Sorter_Backend.Models.DbContex;
-using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using System.Text;
 
 namespace AI_Sorter_Backend.Controllers
 {
@@ -25,15 +26,25 @@ namespace AI_Sorter_Backend.Controllers
 		[HttpPost("login")]
 		public async Task<IActionResult> Login([FromBody] Models.LoginRequest request)
 		{
+			Log.Information("Login attempt for user {Login}", request.Login); // Логирование попытки входа
+
 			var user = await _context.Users.FirstOrDefaultAsync(u => u.login == request.Login);
 			if (user == null)
+			{
+				Log.Warning("User {Login} not found", request.Login); // Логирование неудачного входа
 				return BadRequest(new { message = "Неизвестный логин" });
+			}
 
 			bool isValidPassword = BCrypt.Net.BCrypt.Verify(request.Password, user.passwordHash);
 			if (!isValidPassword)
+			{
+				Log.Warning("Incorrect password for user {Login}", request.Login); // Логирование неверного пароля
 				return BadRequest(new { message = "Неизвестный пароль" });
+			}
 
 			var token = GenerateJwtToken(user);
+			Log.Information("User {Login} logged in successfully", request.Login); // Логирование успешного входа
+
 			return Ok(new { token });
 		}
 
@@ -60,7 +71,5 @@ namespace AI_Sorter_Backend.Controllers
 
 			return new JwtSecurityTokenHandler().WriteToken(token);
 		}
-
 	}
-
 }
