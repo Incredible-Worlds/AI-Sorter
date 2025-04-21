@@ -10,11 +10,13 @@ public class AuthService
 {
 	private readonly HttpClient _http;
 	private readonly ILocalStorageService _localStorage;
+	private readonly CustomAuthStateProvider _customAuthStateProvider;
 
-	public AuthService(HttpClient http, ILocalStorageService localStorage)
+	public AuthService(HttpClient http, ILocalStorageService localStorage, CustomAuthStateProvider customAuthStateProvider	)
 	{
 		_http = http;
 		_localStorage = localStorage;
+		_customAuthStateProvider = customAuthStateProvider;
 	}
 
 	public async Task<bool> Login(string login, string password)
@@ -26,6 +28,12 @@ public class AuthService
 		await _localStorage.SetItemAsync("authToken", result!.Token);
 
 		return true;
+	}
+
+	public async Task LogoutAsync()
+	{
+		await _localStorage.RemoveItemAsync("authToken");
+		_customAuthStateProvider.NotifyUserLogout();
 	}
 
 	public async Task<string?> GetToken() => await _localStorage.GetItemAsync<string>("authToken");
