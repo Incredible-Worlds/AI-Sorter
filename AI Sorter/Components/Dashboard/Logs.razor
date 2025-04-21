@@ -1,0 +1,41 @@
+﻿@inject HttpClient Http
+
+<div>
+    <h2>Логи</h2>
+        
+    <hr />
+</div>
+
+@if (!string.IsNullOrEmpty(error))
+{
+    <p style="color:red">@error</p>
+}
+
+<textarea style="width: 100%; height: 300px;" readonly>@logs</textarea>
+
+<button style="align-self: start" class="button" @onclick="LoadLogs">Обновить</button>
+
+@code {
+    private string logs = "";
+    private string? error;
+
+    private async Task LoadLogs()
+    {
+        try
+        {
+            error = null;
+            var response = await Http.GetFromJsonAsync<LogResponse>("logs/getlogs");
+            logs = response?.Content ?? "Логи не найдены.";
+        }
+        catch (Exception ex)
+        {
+            error = "Ошибка при получении логов: " + ex.Message;
+        }
+    }
+
+    public class LogResponse
+    {
+        public string File { get; set; } = string.Empty;
+        public string Content { get; set; } = string.Empty;
+    }
+}
