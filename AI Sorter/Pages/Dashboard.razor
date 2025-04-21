@@ -1,33 +1,23 @@
 ﻿@page "/dashboard"
 @attribute [Authorize(Roles = "admin")]
 
-<h2 class="text-3xl font-bold mb-6">Админский дашборд</h2>
-
-<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-    <div class="bg-white p-4 rounded-2xl shadow">
-        <h3 class="text-xl font-semibold mb-2">Пользователи</h3>
-        <p class="text-sm text-gray-500">Управление аккаунтами, ролями</p>
-        <button class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-xl">Открыть</button>
-    </div>
-
-    <div class="bg-white p-4 rounded-2xl shadow">
-        <h3 class="text-xl font-semibold mb-2">Системные настройки</h3>
-        <p class="text-sm text-gray-500">Конфигурация и параметры системы</p>
-        <button class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-xl">Открыть</button>
-    </div>
-
-    <div class="bg-white p-4 rounded-2xl shadow">
-        <h3 class="text-xl font-semibold mb-2">Журналы событий</h3>
-        <p class="text-sm text-gray-500">Просмотр логов и активности</p>
-        <button class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-xl">Открыть</button>
-    </div>
-</div>
-
-<div class="mt-10">
-    <h2 class="text-2xl font-bold mb-4">Статистика</h2>
-    <p class="text-gray-600">Тут может быть график с количеством пользователей, ошибок, запросов и т.д.</p>
+<div class="sidebar">
+    <ul class="menu">
+        <li>👥 Пользователи</li>
+        <li>⚙️ Настройки</li>
+        <li>📄 Логи</li>
+        <li>📊 Статистика</li>
+    </ul>
 </div>
 
 @code {
-    // Здесь можно добавить методы загрузки статистики, логов и т.п.
+    private string activeSection = "users";
+
+
+    void SetSection(string section)
+    {
+        activeSection = section;
+    }
+
+    string GetActive(string section) => section == activeSection ? "active" : "";
 }
