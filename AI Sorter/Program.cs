@@ -23,6 +23,7 @@ builder.Services.AddScoped<CustomAuthStateProvider>();
 builder.Services.AddAuthorizationCore();
 
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<LogService>();
 
 builder.Services.AddScoped(sp =>
 	new HttpClient { BaseAddress = new Uri("http://ai-sortme.local/api/") });
