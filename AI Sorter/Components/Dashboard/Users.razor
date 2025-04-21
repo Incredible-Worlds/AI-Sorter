@@ -2,14 +2,15 @@
 @inject AuthService AuthService
 @inject NavigationManager Navigation
 @inject AuthenticationStateProvider authStateProvider
+@inject HttpClient Http
 
 <div>
     <div class="dashboard-header-wrapper">
-		<h2>Пользователи</h2>
+        <h2>Пользователи</h2>
         <button type="button" class="button button-add" @onclick="this.OpenDialog">Добавить</button>
     </div>
 
-	<hr />
+    <hr />
 </div>
 
 <table>
@@ -17,75 +18,105 @@
         <tr>
             <th style="width: 60px">№</th>
             <th>Имя пользователя</th>
+            <th>Роль</th>
             <th style="width: 60px"></th>
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td>1</td>
-            <td>Олег Макетов</td>
-            <td><button class="button button-del">Удалить</button></td>
-        </tr>
-        <tr>
-            <td>2</td>
-            <td>Олег Макетов</td>
-            <td><button class="button button-del">Удалить</button></td>
-        </tr>
-        <tr>
-            <td>3</td>
-            <td>Олег Макетов</td>
-            <td><button class="button button-del">Удалить</button></td>
-        </tr>
+        @if (users != null)
+        {
+            @foreach (var user in users)
+            {
+                <tr>
+                    <td>@(users.IndexOf(user) + 1)</td>
+                    <td>@user.Login</td>
+                    <td>@user.Role</td>
+                    <td><button class="button button-del" @onclick="() => DeleteUser(user.Login)">Удалить</button></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4">Загрузка...</td>
+            </tr>
+        }
     </tbody>
 </table>
 
 <div class="modal-back @_dialogCss">
     <div class="modal">
-		<EditForm Model="loginData" OnValidSubmit="HandleLogin" class="card login-card">
+        <EditForm Model="registerData" OnValidSubmit="HandleRegister" class="card login-card">
 
-			<div>
-				<h2>Добавить пользователя</h2>
+            <div>
+                <h2>Добавить пользователя</h2>
+                <hr />
+            </div>
 
-				<hr />
-			</div>
-			<DataAnnotationsValidator />
-			<div>
-				<label>Имя пользователя:</label>
-				<InputText id="login_input" @bind-Value="loginData.Login" />
-				<ValidationMessage For="@(() => loginData.Login)" />
-			</div>
+            <DataAnnotationsValidator />
+            <div>
+                <label>Имя пользователя:</label>
+                <InputText id="login_input" @bind-Value="registerData.Login" />
+                <ValidationMessage For="@(() => registerData.Login)" />
+            </div>
 
-			<div>
-				<label>Пароль:</label>
-				<InputText id="password_input" @bind-Value="loginData.Password" type="password" />
-				<ValidationMessage For="@(() => loginData.Password)" />
-			</div>
+            <div>
+                <label>Пароль:</label>
+                <InputText id="password_input" @bind-Value="registerData.Password" type="password" />
+                <ValidationMessage For="@(() => registerData.Password)" />
+            </div>
 
+            <div>
+                <label>Роль:</label>
+                <InputText id="role_input" @bind-Value="registerData.Role" />
+                <ValidationMessage For="@(() => registerData.Role)" />
+            </div>
 
-			@if (!string.IsNullOrEmpty(errorMessage))
-			{
-				<p style="color:red">@errorMessage</p>
-			}
-			<div>
-				<button class="button" type="submit">Добавить</button>
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <p style="color:red">@errorMessage</p>
+            }
+            @if (!string.IsNullOrEmpty(successMessage))
+            {
+                <p style="color:green">@successMessage</p>
+            }
+
+            <div>
+                <button class="button" type="submit">Добавить</button>
                 <button type="button" @onclick="this.CloseDialog" class="button button-cancel">Закрыть</button>
-			</div>
+            </div>
 
-		</EditForm>
+        </EditForm>
     </div>
-
 </div>
-
 @code {
-    private LoginRequest loginData = new();
+    public class RegisterRequest
+    {
+        public string Login { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+        public string Role { get; set; } = string.Empty;
+    }
+
+    public class User
+    {
+        public string Login { get; set; } = string.Empty;
+        public string Role { get; set; } = string.Empty;
+    }
+
+    private RegisterRequest registerData = new();
+    private List<User> users = new();
     private string? errorMessage;
+    private string? successMessage;
 
     private bool _dialogOpen;
-    private string _dialogCss => _dialogOpen ? "show": "hide";
+    private string _dialogCss => _dialogOpen ? "show" : "hide";
 
     private Task OpenDialog()
     {
         _dialogOpen = true;
+        errorMessage = null;
+        successMessage = null;
+        registerData = new(); // очистить поля
         return Task.CompletedTask;
     }
 
@@ -95,8 +126,74 @@
         return Task.CompletedTask;
     }
 
-    private async Task HandleLogin()
+    private async Task HandleRegister()
     {
+        errorMessage = null;
+        successMessage = null;
 
+        try
+        {
+            var response = await Http.PostAsJsonAsync("seed/seeding", registerData);
+            if (response.IsSuccessStatusCode)
+            {
+                successMessage = "Пользователь успешно добавлен!";
+                registerData = new();
+                await LoadUsers(); // Перезагрузить список пользователей после добавления
+            }
+            else
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                errorMessage = $"Ошибка регистрации: {content}";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Ошибка: {ex.Message}";
+        }
+    }
+
+    // Загрузка списка пользователей при старте компонента
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUsers();
+    }
+
+    private async Task LoadUsers()
+    {
+        try
+        {
+            var response = await Http.GetFromJsonAsync<List<User>>("users/get-all");
+            if (response != null)
+            {
+                users = response;
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Ошибка при загрузке пользователей: {ex.Message}";
+        }
+    }
+
+    // Метод для удаления пользователя
+    private async Task DeleteUser(string login)
+    {
+        try
+        {
+            var response = await Http.DeleteAsync($"users/delete/{login}");
+            if (response.IsSuccessStatusCode)
+            {
+                successMessage = "Пользователь удален!";
+                await LoadUsers(); // Перезагрузить список пользователей
+            }
+            else
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                errorMessage = $"Ошибка удаления: {content}";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Ошибка: {ex.Message}";
+        }
     }
 }

@@ -76,19 +76,4 @@
     }
 
     string GetActive(string section) => section == activeSection ? "active" : "";
-
-    private SystemStatus? status;
-
-    protected override async Task OnInitializedAsync()
-    {
-        status = await Http.GetFromJsonAsync<SystemStatus>("system/load");
-    }
-
-    public class SystemStatus
-    {
-        public string? CpuName { get; set; }
-        public double Load { get; set; }
-        public ulong MemoryAvailable { get; set; }
-        public ulong MemoryTotal { get; set; }
-    }
 }
