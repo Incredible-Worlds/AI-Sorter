@@ -203,3 +203,168 @@ label {
     padding-top: 4px;
     color: var(--color-error);
 }
+
+.notFound-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.code-error {
+    font-size: 64px;
+}
+
+.file-card {
+    display: flex;
+    justify-content: space-between;
+    padding: 18px 24px;
+    border-radius: 12px;
+    background-color: var(--color-white);
+    box-shadow: 0px 0px 10px 0px rgba(178, 189, 243, 0.3);
+}
+
+.file-info-content {
+    display: flex;
+    gap: 10px;
+}
+
+.status-done {
+    color: var(--color-done);
+}
+
+.status-progress {
+    color: var(--color-progress);
+}
+
+.status-error {
+    color: var(--color-error);
+}
+
+.file-date {
+    font-size: 12px;
+    color: var(--color-grey);
+    padding-top: 8px;
+}
+
+.upload-zone {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 64px 0;
+    border: 3px dashed #E2E9FF;
+    border-radius: 8px;
+}
+
+.hover {
+    border: 3px dashed #FFD2D2;
+}
+
+::deep input[type="file"] {
+    /*display: none;*/
+    width: 100%;
+    padding: 20px
+}
+
+.prompt-zone {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 24px 0;
+}
+
+.button-center {
+    display: flex;
+    justify-content: center;
+}
+
+.fileselect {
+    display: inline-block;
+    cursor: pointer;
+    color: var(--color-main);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+    .fileselect:hover {
+        color: var(--color-main-hover);
+    }
+
+.tooltip {
+    position: absolute;
+    margin-left: 4px;
+}
+
+.tooltip-toggle {
+    border: none;
+    border-radius: 20px;
+    padding: 0;
+    margin: 0;
+    display: block;
+}
+
+.tooltip-icon {
+    width: 16px;
+    height: 16px;
+    color: var(--color-main);
+    padding: 0;
+    display: block;
+}
+
+.tooltip-toggle:hover .tooltip-icon {
+    color: var(--color-main);
+}
+
+.tooltip-text {
+    background-color: rgb(0, 0, 0, 0.5);
+    color: #FFFFFF;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 400;
+    text-transform: none;
+    text-align: center;
+    padding: 16px;
+    border-radius: 10px;
+    width: 400px;
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    z-index: 1;
+    transform: translateX(-50%);
+    display: none;
+    margin-bottom: 4px;
+}
+
+.tooltip-toggle:hover + .tooltip-text,
+.tooltip-toggle:focus + .tooltip-text {
+    display: block;
+}
+
+.login-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.header {
+    background-color: var(--color-white);
+    padding: 24px 0;
+    box-shadow: 0px 0px 10px 0px rgba(178, 189, 243, 0.3);
+}
+
+.page {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100vh;
+}
+
+.footer {
+    height: 65px;
+    background-color: var(--color-white);
+    /*    padding: 24px 0;*/
+    box-shadow: 0px 0px 10px 0px rgba(178, 189, 243, 0.3);
+}
