@@ -55,8 +55,6 @@ builder.Services.AddAuthentication("Bearer")
 
 builder.Services.AddAuthorization();
 
-builder.Services.AddScoped<SystemInfoService>();
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
