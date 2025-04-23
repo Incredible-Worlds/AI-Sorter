@@ -13,11 +13,10 @@
 <section class="container card-wrapper">
 	<AuthorizeView>
 		<Authorized>
-			@if (userRole == "admin")
+@* 			@if (userRole == "admin")
 			{
 				<p>👑 Привет, админ! Ты видишь админский контент.</p>
-			}
-            <button class="button" @onclick="Logout">Выйти</button>
+			} *@
 		</Authorized>
 	</AuthorizeView>
 
@@ -28,6 +27,8 @@
 	<div class="card card-satus">
 		<CardStatus/>
 	</div>
+	<button class="button" @onclick="Logout" style="align-self: start">Выйти</button>
+
 </section>
 
 
