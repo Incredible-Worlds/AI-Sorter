@@ -32,7 +32,8 @@ namespace AI_Sorter_Backend.Controllers
 			var user = new Users
 			{
 				login = dto.login,
-				passwordHash = passwordHash
+				passwordHash = passwordHash,
+				role = string.IsNullOrEmpty(dto.role) ? "user" : dto.role  // ← роль по умолчанию "user"
 			};
 
 			_db.Users.Add(user);

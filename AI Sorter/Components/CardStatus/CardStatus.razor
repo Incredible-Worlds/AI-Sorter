@@ -6,7 +6,6 @@
 
 <div>
 	<h2>Статус обработки</h2>
-	<p>Оновление статуса через 00 секунд/ы</p>
 	<hr />
 </div>
 
@@ -51,7 +50,7 @@
 	{
 		base.OnInitialized();
 
-		timer = new Timer(OnTimerElapsed, null, TimeSpan.Zero, TimeSpan.FromSeconds(15));
+		timer = new Timer(OnTimerElapsed, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
 	}
 
 	private void OnTimerElapsed(object state)

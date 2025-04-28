@@ -11,5 +11,8 @@ namespace AI_Sorter_Backend.Models
 
 		[Required]
 		public string passwordHash { get; set; } = string.Empty;
+
+		[Required]
+		public string role { get; set; } = string.Empty;
 	}
 }

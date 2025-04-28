@@ -1,0 +1,79 @@
+﻿@page "/dashboard"
+@using AI_Sorter.Components.Dashboard
+@inject HttpClient Http
+@attribute [Authorize(Roles = "admin")]
+
+<section class="dashboard-wrapper">
+	<div class="dashboard-sidebar">
+		<ul class="dashboard-menu">
+			<li>
+				<button @onclick='() => currentView = "user"' type="button" class="button menu-button">
+					Пользователи
+				</button>
+			</li>
+			<li>
+				<button @onclick='() => currentView = "logs"' type="button" class="button menu-button">
+					Логи
+				</button>
+			</li>
+			<li>
+				<button type="button" disabled class="button menu-button">
+					Настройки
+				</button>
+			</li>
+
+			<li>
+				<button type="button" disabled class="button menu-button">
+					Статистика
+				</button>
+			</li>
+		</ul>
+	</div>
+
+
+	<div class="card components-card">
+		@if (currentView == "user")
+		{
+			<Users></Users>
+		}
+		else if (currentView == "logs")
+		{
+			<Logs></Logs>
+		}
+
+		@code {
+			private string currentView = "home";
+		}
+@* 		<Users></Users>
+		<Logs></Logs> *@
+
+@* 		@if (status != null)
+		{
+			<div class="card">
+				<h3>CPU</h3>
+				<p>@status.CpuName</p>
+				<p>Load: @status.Load %</p>
+			</div>
+			<div class="card">
+				<h3>Memory</h3>
+				<p>Free: @(status.MemoryAvailable / (1024 * 1024)) MB</p>
+				<p>Total: @(status.MemoryTotal / (1024 * 1024)) MB</p>
+			</div>
+		} *@
+	</div>
+</section>
+
+
+
+
+@code {
+    private string activeSection = "users";
+
+
+    void SetSection(string section)
+    {
+        activeSection = section;
+    }
+
+    string GetActive(string section) => section == activeSection ? "active" : "";
+}

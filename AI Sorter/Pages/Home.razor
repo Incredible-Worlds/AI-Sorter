@@ -3,35 +3,52 @@
 @using AI_Sorter.Components.CardStatus
 @inject MarkdownService MarkdownService
 @inject OllamaApiService OllamaApiService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject AuthService AuthService
+@inject NavigationManager NavigationManager
 @attribute [Authorize]
 
 <PageTitle>AI Sorter</PageTitle>
 
 <section class="container card-wrapper">
-	@*     <textarea @bind="promptInput" rows="10" cols="50"></textarea>
+	<AuthorizeView>
+		<Authorized>
+@* 			@if (userRole == "admin")
+			{
+				<p>👑 Привет, админ! Ты видишь админский контент.</p>
+			} *@
+		</Authorized>
+	</AuthorizeView>
 
-	<button @onclick="SendApiRequest">Отправить запрос</button>
 
-	<div>
-	@((MarkupString)htmlOutput)
-	</div> *@
-	
 	<div class="card card-load">
 		<CardLoadFile />
 	</div>
 	<div class="card card-satus">
 		<CardStatus/>
 	</div>
+	<button class="button" @onclick="Logout" style="align-self: start">Выйти</button>
+
 </section>
 
 
 @code {
-    private string promptInput = "Почему небо голубое?";
-    private string htmlOutput = string.Empty;
+	private string? userRole;
 
-    private async void SendApiRequest()
-    {
-        htmlOutput = MarkdownService.ConvertMarkdownToHtml(await OllamaApiService.GetOllamaResponseAsync(promptInput, "gemma2"));
-        StateHasChanged();
-    }
+	protected override async Task OnInitializedAsync()
+	{
+		var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+		var user = authState.User;
+
+		if (user.Identity?.IsAuthenticated == true)
+		{
+			userRole = user.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
+		}
+	}
+
+	private async Task Logout()
+	{
+		await AuthService.LogoutAsync();
+		NavigationManager.NavigateTo("/login");
+	}
 }

@@ -149,6 +149,10 @@ a.disabled {
     background-color: var(--color-sub-main);
 }
 
+.button-logout {
+    background-color: red;
+}
+
 textarea {
     font-family: var(--font-main);
     border: 3px solid #E2E9FF;
@@ -367,4 +371,133 @@ label {
     background-color: var(--color-white);
     /*    padding: 24px 0;*/
     box-shadow: 0px 0px 10px 0px rgba(178, 189, 243, 0.3);
+}
+
+.dashboard-wrapper {
+    display: flex;
+    justify-content: stretch;
+    height: 100%;
+    gap: 24px;
+    padding-right: 24px;
+}
+
+.dashboard-header-wrapper {
+    display: flex;
+    justify-content:space-between;
+}
+
+.dashboard-sidebar {
+    width: 300px;
+    background-color: var(--color-white);
+    padding: 24px 12px;
+    box-shadow: 0px 0px 10px 0px rgba(178, 189, 243, 0.3);
+    border-radius: 0 12px 12px 0;
+}
+
+.components-wrapper {
+    width: 100%;
+}
+
+.dashboard-menu {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+}
+
+.menu-button {
+    background-color: var(--color-background);
+    color: var(--font-main);
+
+    text-align: left;
+
+    width: 100%;
+}
+
+    .menu-button:hover {
+        background-color: #E7ECF4;
+    }
+
+    .menu-button:disabled {
+        background-color: var(--color-background);
+        color: #E7ECF4;
+    }
+
+.components-card {
+    width: 100%;
+    min-height: 600px
+}
+
+table {
+    border-collapse: collapse;
+}
+
+th, td {
+    border-bottom: 1px solid #ddd;
+    padding: 8px
+}
+
+tr:nth-child(even) {
+    background-color: var(--color-background);
+}
+
+tr:hover {
+    background-color: #E7ECF4;
+}
+
+th {
+    text-align: left
+}
+
+.button-del {
+    background-color: var(--color-error);
+    padding: 8px 16px;
+}
+
+    .button-del:hover {
+        background-color: #C4152E;
+    }
+
+.button-add {
+    background-color: var(--color-done);
+    padding: 8px 16px;
+}
+
+    .button-add:hover {
+        background-color: #1F9C42;
+    }
+
+.modal-back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+
+    display: flex;
+    justify-content:center;
+    align-items: center;
+}
+
+.modal {
+    position: fixed;
+}
+
+.button-cancel {
+    background-color: unset;
+    color: var(--color-main);
+    padding: 8px 8px;
+}
+
+.button-cancel:hover {
+    background-color: unset;
+    color: var(--color-main-hover);
+}
+
+.hide {
+    display: none;
 }
